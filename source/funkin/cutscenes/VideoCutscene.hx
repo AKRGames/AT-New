@@ -3,8 +3,10 @@ package funkin.cutscenes;
 import flixel.FlxSprite;
 import flixel.FlxG;
 import flixel.FlxCamera;
-import openfl.utils.Assets;
 
+/**
+ * Substate made for video cutscenes. To use it in a scripted cutscene, call `startVideo`.
+ */
 class VideoCutscene extends Cutscene {
     var path:String;
     var localPath:String;

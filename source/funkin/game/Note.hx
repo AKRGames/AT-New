@@ -1,6 +1,7 @@
 package funkin.game;
 
-import openfl.utils.Assets;
+import funkin.chart.Chart;
+import funkin.chart.ChartData;
 import flixel.FlxG;
 import flixel.FlxCamera;
 import flixel.FlxSprite;
@@ -19,17 +20,21 @@ class Note extends FlxSprite
 	public var strumTime:Float = 0;
 
 	public var mustPress(get, never):Bool;
-	public var strumLine(get, never):StrumLine;
-	private function get_strumLine() {
-		if (PlayState.instance != null)
-			return PlayState.instance.players[strumLineID];
-		return null;
+	public var strumLine(default, set):StrumLine;
+	private function set_strumLine(strLine:StrumLine) {
+		if (this.strumLine != null) {
+			if (this.strumLine.notes != null)
+				this.strumLine.notes.remove(this, true);
+			strLine.notes.add(this);
+			strLine.notes.sortNotes();
+		}
+		return strumLine = strLine;
 	}
 
 	private function get_mustPress():Bool {
-		if (PlayState.instance != null)
-			return PlayState.instance.players[strumLineID] != null && !PlayState.instance.players[strumLineID].cpu;
-		return strumLineID == 1;
+		// if (PlayState.instance != null)
+		// 	return PlayState.instance.players[strumLineID] != null && !PlayState.instance.players[strumLineID].cpu;
+		return false;
 	}
 	public var noteData:Int = 0;
 	public var canBeHit:Bool = false;
@@ -67,12 +72,10 @@ class Note extends FlxSprite
 	}
 
 	public var sustainLength:Float = 0;
-	public var stepLength:Float = 0;
 	public var isSustainNote:Bool = false;
 	public var flipSustain:Bool = true;
 
 	public var noteTypeID:Int = 0;
-	public var strumLineID:Int = 0;
 
 	// TO APPLY THOSE ON A SINGLE NOTE
 	public var scrollSpeed:Null<Float> = null;
@@ -93,27 +96,26 @@ class Note extends FlxSprite
 
 	public var animSuffix:String = "";
 
-	public function new(strumTime:Float, noteData:Int, noteType:Int = 0, strumLineID:Int = 1, ?prevNote:Note, ?sustainNote:Bool = false, animSuffix:String = "")
+	public function new(strumLine:StrumLine, noteData:ChartNote, sustain:Bool = false, sustainLength:Float = 0, sustainOffset:Float = 0)
 	{
 		super();
 
-		if (prevNote == null)
-			prevNote = this;
-
-		this.prevNote = prevNote;
-		this.strumLineID = strumLineID;
-		this.noteTypeID = noteType;
-		isSustainNote = sustainNote;
+		// TODO: Sustain note
+		this.prevNote = strumLine.notes.members.last();
+		this.noteTypeID = noteData.type.getDefault(0);
+		this.isSustainNote = sustain;
+		this.sustainLength = sustainLength;
+		this.strumLine = strumLine;
 
 		x += 50;
 		// MAKE SURE ITS DEFINITELY OFF SCREEN?
 		y -= 2000;
-		this.strumTime = strumTime;
+		this.strumTime = noteData.time.getDefault(0) + sustainOffset;
 
-		this.noteData = noteData;
+		this.noteData = noteData.id.getDefault(0);
 
 		var customType = Paths.image('game/notes/${this.noteType}');
-		var event = EventManager.get(NoteCreationEvent).recycle(this, strumID, this.noteType, noteTypeID, strumLineID, mustPress, Assets.exists(customType) ? 'game/notes/${this.noteType}' : 'game/notes/default', 0.7, animSuffix);
+		var event = EventManager.get(NoteCreationEvent).recycle(this, strumID, this.noteType, noteTypeID, PlayState.instance.players.indexOf(strumLine), mustPress, Assets.exists(customType) ? 'game/notes/${this.noteType}' : 'game/notes/default', 0.7, animSuffix);
 
 		if (PlayState.instance != null)
 			event = PlayState.instance.scripts.event("onNoteCreation", event);
@@ -182,6 +184,11 @@ class Note extends FlxSprite
 	 */
 	public var strumRelativePos:Bool = true;
 
+	override function drawComplex(camera:FlxCamera) {
+		flipY = (isSustainNote && flipSustain) && ((camera is HudCamera ? cast(camera, HudCamera).downscroll : false) != (__strum != null && __strum.getScrollSpeed(this) < 0));
+		super.drawComplex(camera);
+	}
+
 	override function draw() {
 		@:privateAccess var oldDefaultCameras = FlxCamera._defaultCameras;
 		@:privateAccess if (__strumCameras != null) FlxCamera._defaultCameras = __strumCameras;
@@ -231,7 +238,7 @@ class Note extends FlxSprite
 			// is long sustain
 			lastScrollSpeed = scrollSpeed;
 
-			scale.y = (stepLength * (0.45 * FlxMath.roundDecimal(scrollSpeed, 2))) / frameHeight;
+			scale.y = (sustainLength * (0.45 * FlxMath.roundDecimal(scrollSpeed, 2))) / frameHeight;
 			updateHitbox();
 			if (useAntialiasingFix) {
 				// dumbass antialiasing

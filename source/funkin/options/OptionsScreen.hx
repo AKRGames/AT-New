@@ -19,7 +19,6 @@ class OptionsScreen extends MusicBeatState {
     public static var instance:OptionsScreen;
     public static var optionHeight:Float = 120;
 
-    // public var bgColor:FlxColor = 0xFFFDE871;
     public var bg:FlxSprite;
 
     public var descDrop:FlxBackdrop;
@@ -43,13 +42,22 @@ class OptionsScreen extends MusicBeatState {
         FlxTransitionableState.skipNextTransIn = true;
         super.create();
         
-        bg = new FlxSprite(-80).loadAnimatedGraphic(Paths.image('menus/menuBG'));
+        bg = new FlxSprite(-80).loadAnimatedGraphic(Paths.image('menus/menuDesat'));
         bg.scrollFactor.set();
         bg.scale.set(1.15, 1.15);
         bg.updateHitbox();
         bg.screenCenter();
+        bg.color = defaultBGColor;
         bg.antialiasing = true;
         add(bg);
+
+
+        for(k=>option in options) {
+            option.setPosition(k * 20, 10 + (k * optionHeight));
+            add(option);
+        }
+
+        createAdditional();
 
         descText = new FunkinText(0, 0);
         descText.alignment = CENTER;
@@ -65,14 +73,10 @@ class OptionsScreen extends MusicBeatState {
         add(descDrop);
 
         descText.antialiasing = descDrop.antialiasing = true;
-
-        for(k=>option in options) {
-            option.setPosition(k * 20, 10 + (k * optionHeight));
-            add(option);
-        }
         changeSelection(1);
     }
 
+    public function createAdditional() {}
     public var scrollDest:FlxPoint = FlxPoint.get(0, 0);
     public override function update(elapsed:Float) {
         super.update(elapsed);
@@ -81,15 +85,15 @@ class OptionsScreen extends MusicBeatState {
             options[curSelected].onSelect();
         }
         if (controls.BACK) {
-            Options.applySettings();
             Options.save();
+            Options.applySettings();
             exit();
         }
         FlxG.camera.scroll.x = lerp(FlxG.camera.scroll.x, scrollDest.x, 0.25);
         FlxG.camera.scroll.y = lerp(FlxG.camera.scroll.y, scrollDest.y, 0.25);
 
         for(option in options) {
-            var angle = Math.cos((option.y + (optionHeight / 2) - (FlxG.camera.scroll.y + (FlxG.height / 2))) / FlxG.height * Math.PI);
+            var angle = Math.cos((option.y + (optionHeight / 2) - (FlxG.camera.scroll.y + ((FlxG.height - descBG.height) / 2))) / (FlxG.height * 1.25) * Math.PI);
 
             option.x = -50 + (Math.abs(angle) * 150);
         }
@@ -111,7 +115,7 @@ class OptionsScreen extends MusicBeatState {
             for(e in options)
                 e.selected = false;
             options[curSelected].selected = true;
-            scrollDest.set(-50, -(FlxG.height / 2) + ((curSelected + 0.5) * optionHeight));
+            scrollDest.set(-50, -((FlxG.height - descBG.height) / 2) + ((curSelected + 0.5) * optionHeight));
             updateDesc();
         }
     }

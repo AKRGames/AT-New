@@ -1,5 +1,7 @@
 package funkin.system;
 
+import funkin.chart.Chart;
+import funkin.chart.ChartData;
 import flixel.math.FlxMath;
 import openfl.Lib;
 import flixel.FlxState;
@@ -104,14 +106,6 @@ class Conductor
 	 */
 	public static var bpmChangeMap:Array<BPMChangeEvent> = [];
 
-	/**
-	 * Thread for multi-threaded audio syncing.
-	 */
-	#if ALLOW_MULTITHREADING
-	public static var syncThread:sys.thread.Thread;
-	public static var syncThreadTime:Null<Float> = null;
-	#end
-
 	@:dox(hide) public function new() {}
 
 	public static function reset() {
@@ -121,10 +115,10 @@ class Conductor
 		changeBPM(0);
 	}
 
-	public static function setupSong(SONG:SwagSong) {
+	public static function setupSong(SONG:ChartData) {
 		reset();
-		mapBPMChanges(SONG);
-		changeBPM(SONG.bpm, cast SONG.beatsPerMesure.getDefault(4), cast SONG.stepsPerBeat.getDefault(4));
+		// mapBPMChanges(SONG); // TODO!!!
+		changeBPM(SONG.meta.bpm, cast SONG.meta.beatsPerMesure.getDefault(4), cast SONG.meta.stepsPerBeat.getDefault(4));
 	}
 	/**
 	 * Maps BPM changes from a song.
@@ -163,23 +157,6 @@ class Conductor
 		FlxG.signals.preUpdate.add(update);
 		FlxG.signals.preStateCreate.add(onStateSwitch);
 		reset();
-
-		#if ALLOW_MULTITHREADING
-		syncThread = ThreadUtil.createSafe(function() {
-			while(true) {
-				if (syncThreadTime == null)
-					syncThreadTime = Sys.time();
-
-				// if (FlxG.state != null && FlxG.state is MusicBeatState && cast(FlxG.state, MusicBeatState).cancelConductorUpdate) continue;
-
-				elapsed = -(syncThreadTime - (syncThreadTime = Sys.time()));
-
-				if (elapsed == 0) continue;
-
-				__updateSongPos(elapsed, syncThreadTime);
-			}
-		}, true);
-		#end
 	}
 
 	private static var __timeUntilUpdate:Float;
@@ -216,9 +193,7 @@ class Conductor
 	private static function update() {
 		if (FlxG.state != null && FlxG.state is MusicBeatState && cast(FlxG.state, MusicBeatState).cancelConductorUpdate) return;
 
-		#if !ALLOW_MULTITHREADING
 		__updateSongPos(FlxG.elapsed, Main.time);
-		#end
 
 		if (bpm > 0) {
 			// updates curbeat and stuff

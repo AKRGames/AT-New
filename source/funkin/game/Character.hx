@@ -14,7 +14,6 @@ import flixel.animation.FlxBaseAnimation;
 import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.math.FlxRect;
 
-import openfl.utils.Assets;
 import haxe.xml.Access;
 import haxe.Exception;
 import haxe.io.Path;
@@ -29,9 +28,12 @@ import funkin.scripting.events.PlayAnimEvent.PlayAnimContext;
 using StringTools;
 
 @:allow(funkin.desktop.editors.CharacterEditor)
+@:allow(funkin.game.StrumLine)
+@:allow(funkin.game.PlayState)
 class Character extends FunkinSprite implements IBeatReceiver implements IOffsetCompatible
 {
 	private var __stunnedTime:Float = 0;
+	private var __lockAnimThisFrame:Bool = false;
 	public var stunned(default, set):Bool = false;
 
 	private function set_stunned(b:Bool) {
@@ -73,10 +75,10 @@ class Character extends FunkinSprite implements IBeatReceiver implements IOffset
 		return new FlxPoint(event.x, event.y);
 	}
 
-	public function playSingAnim(direction:Int, suffix:String = "", Context:PlayAnimContext = SING, Reversed:Bool = false, Frame:Int = 0) {
+	public function playSingAnim(direction:Int, suffix:String = "", Context:PlayAnimContext = SING, Force:Bool = true, Reversed:Bool = false, Frame:Int = 0) {
 		var anims = ["singLEFT", "singDOWN", "singUP", "singRIGHT"];
 
-		var event = EventManager.get(DirectionAnimEvent).recycle('${anims[direction]}$suffix', direction, suffix, Context, Reversed, Frame);
+		var event = EventManager.get(DirectionAnimEvent).recycle('${anims[direction]}$suffix', direction, suffix, Context, Reversed, Frame, Force);
 		script.call("onPlaySingAnim", [event]);
 		if (!event.cancelled) playAnim(event.animName, event.force, Context, event.reversed, event.frame);
 	}
@@ -206,6 +208,7 @@ class Character extends FunkinSprite implements IBeatReceiver implements IOffset
 			if (__stunnedTime > 5 / 60)
 				stunned = false;
 		}
+		__lockAnimThisFrame = false;
 	}
 
 	private var danced:Bool = false;
@@ -254,9 +257,17 @@ class Character extends FunkinSprite implements IBeatReceiver implements IOffset
 	 */
 	public var danceOnBeat:Bool = true;
 
+	/**
+	 * Interval at which the character will dance (higher number = slower dance)
+	 */
+	public var danceInterval:Int = 1;
+
 	public override function beatHit(curBeat:Int) {
 		script.call("beatHit", [curBeat]);
-		if (danceOnBeat) {
+		if (danceInterval < 1)
+			danceInterval = 1;
+
+		if (danceOnBeat && curBeat % danceInterval == 0 && !__lockAnimThisFrame) {
 			tryDance();
 		}
 	}

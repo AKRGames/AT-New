@@ -4,7 +4,6 @@ import lime.app.Application;
 import flixel.util.FlxDestroyUtil.IFlxDestroyable;
 import flixel.FlxBasic;
 import haxe.io.Path;
-import openfl.utils.Assets;
 
 /**
  * Class used for scripting.
@@ -84,7 +83,7 @@ class Script extends FlxBasic implements IFlxDestroyable {
             "CoolUtil"          => funkin.utils.CoolUtil,
             "IniUtil"           => funkin.utils.IniUtil,
             "XMLUtil"           => funkin.utils.XMLUtil,
-            "ZipUtil"           => funkin.utils.ZipUtil,
+            #if sys "ZipUtil"   => funkin.utils.ZipUtil, #end
             "MarkdownUtil"      => funkin.utils.MarkdownUtil,
             "EngineUtil"        => funkin.utils.EngineUtil,
         ];

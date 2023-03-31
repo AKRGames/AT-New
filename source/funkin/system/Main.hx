@@ -32,12 +32,13 @@ import sys.thread.Thread;
 #if sys
 import sys.io.File;
 #end
-// TODO: REMOVE TEST
 import funkin.mods.ModsFolder;
 
 class Main extends Sprite
 {
 	public static var instance:Main;
+
+	public static var modToLoad:String = null;
 
 	public static var scaleMode:FunkinRatioScaleMode;
 
@@ -100,7 +101,7 @@ class Main extends Sprite
 		}
 
 
-		addChild(new FlxGame(gameWidth, gameHeight, null, zoom, framerate, framerate, skipSplash, startFullscreen));
+		addChild(new FunkinGame(gameWidth, gameHeight, null, zoom, framerate, framerate, skipSplash, startFullscreen));
 		loadGameSettings();
 		// FlxG.switchState(new TitleState());
 		FlxG.switchState(new funkin.menus.BetaWarningState());
@@ -115,6 +116,14 @@ class Main extends Sprite
 	public static var audioDisconnected:Bool = false;
 
 	public static var changeID:Int = 0;
+	public static var pathBack = #if windows
+			"../../../../"
+		#elseif mac
+			"../../../../../../../"
+		#else
+			""
+		#end;
+	public static var startedFromSource:Bool = false;
 
 
 	private static var __threadCycle:Int = 0;
@@ -155,15 +164,7 @@ class Main extends Sprite
 		#end
 
 		#if sys
-		if (Sys.args().contains("-livereload")) {
-			var pathBack = #if windows
-				"../../../../"
-			#elseif mac
-				"../../../../../../../"
-			#else
-				""
-			#end;
-
+		if (startedFromSource = Sys.args().contains("-livereload")) {
 			#if USE_SOURCE_ASSETS
 			#if windows
 			trace("Used lime test windows. Switching into source assets.");
@@ -194,7 +195,7 @@ class Main extends Sprite
 		Assets.registerLibrary('default', lib);
 
 		funkin.options.PlayerSettings.init();
-		FlxG.save.bind('Codename-Engine');
+		FlxG.save.bind('save', 'CodenameEngine');
 		Options.load();
 		Highscore.load();
 
@@ -208,10 +209,11 @@ class Main extends Sprite
 		AudioSwitchFix.init();
 		WindowsAPI.setDarkMode(true);
 		EventManager.init();
-		FlxG.signals.preStateCreate.add(onStateSwitch);
+		FlxG.signals.preStateSwitch.add(onStateSwitch);
+		FlxG.signals.postStateSwitch.add(onStateSwitchPost);
 
 		#if MOD_SUPPORT
-		ModsFolder.switchMod(Options.lastLoadedMod);
+		ModsFolder.switchMod(modToLoad.getDefault(Options.lastLoadedMod));
 		#end
 
 		initTransition();
@@ -235,24 +237,27 @@ class Main extends Sprite
 			{asset: diamond, width: 32, height: 32}, new FlxRect(-200, -200, FlxG.width * 1.4, FlxG.height * 1.4));
 	}
 
-	private static function onStateSwitch(newState:FlxState) {
+	private static function onStateSwitch() {
+		scaleMode.resetSize();
+	}
+
+	private static function onStateSwitchPost() {
 		// manual asset clearing since base openfl one doesnt clear lime one
 		// doesnt clear bitmaps since flixel fork does it auto
 
 		@:privateAccess {
-			// clear uint8 pools since it causes memory leak with openfl textfield
+			// clear uint8 pools
 			for(length=>pool in openfl.display3D.utils.UInt8Buff._pools) {
 				for(b in pool.clear())
 					b.destroy();
 			}
 			openfl.display3D.utils.UInt8Buff._pools.clear();
 		}
-		scaleMode.resetSize();
 
 		var cache = cast(Assets.cache, AssetCache);
-		for (key=>font in cache.font)
+		for (key=>_ in cache.font)
 			cache.removeFont(key);
-		for (key=>sound in cache.sound)
+		for (key=>_ in cache.sound)
 			cache.removeSound(key);
 
 		Paths.assetsTree.clearCache();

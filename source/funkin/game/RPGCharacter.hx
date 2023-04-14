@@ -1,6 +1,7 @@
-package;
+package funkin.game;
 
 import flixel.FlxSprite;
+import flixel.util.FlxColor;
 
 class RPGCharacter extends FlxSprite
 {

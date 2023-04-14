@@ -20,7 +20,7 @@ class BuildCounterMacro {
     public static macro function getBuildNumber():haxe.macro.Expr.ExprOf<Int> {
         #if !display
         var buildNum:Int = Std.parseInt(File.getContent("buildnumber.txt"));
-        return macro $v{buildNum+1};
+        return macro $v{buildNum};
         #else
         return macro $v{0};
         #end

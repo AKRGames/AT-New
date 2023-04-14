@@ -2,7 +2,7 @@
 <project>
 	<!-- _________________________ Application Settings _________________________ -->
 
-	<app title="Friday Night Funkin': AlterTrack" file="AlterTrack" packageName="com.alterteam.altertrack" package="com.alterteam.altertrack" main="funkin.system.Main" version="0.0.0" company="AlterTeam" />
+	<app title="Friday Night Funkin': AlterTrack" file="AlterTrack" packageName="com.dandevgroup.altertrack" package="com.dandevgroup.altertrack" main="funkin.system.Main" version="0.0.0" company="DanDevGroup" />
 
 	<!--Switch Export with Unique ApplicationID and Icon-->
 	<set name="APP_ID" value="0x0100f6c013bbc000" />
@@ -169,7 +169,7 @@
 	<haxeflag name="--macro" value="exclude('funkin.multitasking')" unless="ALLOW_MULTITASKING"/>
 
 	<!-- MACROS & DOCUMENTATION !-->
-	<haxeflag name="--macro" value="funkin.macros.BuildCounterMacro.getBuildNumber()" />
+	<haxeflag name="--macro" value="funkin.macros.AlterBuildCounterMacro.getATBuildNumber()" />
 
 	<haxedef name="HXCPP_CHECK_POINTER" if="release" />
 	<haxedef name="HXCPP_STACK_LINE" if="release" />

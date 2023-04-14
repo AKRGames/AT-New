@@ -68,9 +68,6 @@ class OptionsScreen extends MusicBeatState {
         descBG.scrollFactor.set();
         add(descBG);
         
-        descDrop = new FlxBackdrop(null, 1, 0, true, false, 0, 0);
-        descDrop.scrollFactor.set();
-        add(descDrop);
 
         descText.antialiasing = descDrop.antialiasing = true;
         changeSelection(1);
@@ -128,8 +125,7 @@ class OptionsScreen extends MusicBeatState {
         descText.text = '/    ${text}    /';
         @:privateAccess descText.regenGraphic(); //updates the thing
 
-        descDrop.loadFrame(descText.frame);
-        descDrop.y = Std.int(FlxG.height - 10 - descText.height);
+
 
         descBG.setGraphicSize(FlxG.width + 2, Std.int(descText.height + 20) + 1);
         descBG.updateHitbox();

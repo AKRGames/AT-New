@@ -16,13 +16,13 @@ class BetaWarningState extends MusicBeatState {
     public override function create() {
         super.create();
 
-        titleAlphabet = new Alphabet(0, 0, "WARNING", true);
+        titleAlphabet = new Alphabet(0, 0, "DISCLAIMER", true);
         titleAlphabet.screenCenter(X);
         add(titleAlphabet);
 
         disclaimer = new FunkinText(16, titleAlphabet.y + titleAlphabet.height + 10, FlxG.width - 32, "", 32);
         disclaimer.alignment = CENTER;
-        disclaimer.applyMarkup("This engine is still in a beta state. That means *majority of the features* are either *buggy* or *non finished*. If you find any bug, please report them to the Codename Engine GitHub.\n\nPress ENTER to continue",
+        disclaimer.applyMarkup("The engine that this mod uses is still in a beta state. That means *majority of it's features* are either *buggy* or *non finished*. If you find any bug, please report them to the Codename Engine GitHub.\n\nPress ENTER to continue.",
             [
                 new FlxTextFormatMarkerPair(new FlxTextFormat(0xFFFF4444), "*")
             ]
@@ -43,7 +43,11 @@ class BetaWarningState extends MusicBeatState {
             FlxG.camera.flash(FlxColor.WHITE, 1, function() {
                 FlxG.camera.fade(FlxColor.BLACK, 2.5, false, function() {
                     FlxTransitionableState.skipNextTransIn = FlxTransitionableState.skipNextTransOut = true;
+                    #if debug
+                    FlxG.switchState(new RPGState());
+                    #else
                     FlxG.switchState(new TitleState());
+                    #end
                 });
             });
         }

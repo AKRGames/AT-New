@@ -6,15 +6,10 @@ import openfl.utils.AssetCache;
 import openfl.text.TextFormat;
 import flixel.system.ui.FlxSoundTray;
 import funkin.windows.WindowsAPI;
-import funkin.menus.BetaWarningState;
-import funkin.menus.TitleState;
 import funkin.game.Highscore;
 import funkin.options.Options;
-import flixel.FlxGame;
-import flixel.FlxState;
 import openfl.Assets;
 import flash.Lib;
-import openfl.display.FPS;
 import openfl.display.Sprite;
 import openfl.events.Event;
 import flixel.FlxG;
@@ -24,7 +19,6 @@ import flixel.addons.transition.FlxTransitionSprite.GraphicTransTileDiamond;
 import flixel.addons.transition.TransitionData;
 import flixel.math.FlxPoint;
 import flixel.math.FlxRect;
-import lime.app.Application;
 
 #if ALLOW_MULTITHREADING
 import sys.thread.Thread;
@@ -46,7 +40,7 @@ class Main extends Sprite
 	var gameHeight:Int = 720; // Height of the game in pixels (might be less / more in actual pixels depending on your zoom).
 	var zoom:Float = -1; // If -1, zoom is automatically calculated to fit the window dimensions.
 	var framerate:Int = 120; // How many frames per second the game should run at.
-	var skipSplash:Bool = false; // Whether to skip the flixel splash screen that appears in release mode.
+	var skipSplash:Bool = true; // Whether to skip the flixel splash screen that appears in release mode.
 	var startFullscreen:Bool = false; // Whether to start the game in fullscreen on desktop targets
 
 	public static var time:Int = 0;
@@ -103,7 +97,8 @@ class Main extends Sprite
 
 		addChild(new FunkinGame(gameWidth, gameHeight, null, zoom, framerate, framerate, skipSplash, startFullscreen));
 		loadGameSettings();
-		// FlxG.switchState(new TitleState());
+		// FlxG.switchState(new funkin.system.AlterSplash());
+		// FlxG.switchState(new funkin.menus.TitleState());
 		FlxG.switchState(new funkin.menus.BetaWarningState());
 
 		#if !mobile
@@ -177,9 +172,9 @@ class Main extends Sprite
 			Paths.assetsTree.sourceLibsAmount++;
 			#end
 
-			var buildNum:Int = Std.parseInt(File.getContent('./${pathBack}buildnumber.txt'));
-			buildNum++;
-			File.saveContent('./${pathBack}buildnumber.txt', Std.string(buildNum));
+			var ATbuildNum:Int = Std.parseInt(File.getContent('./${pathBack}ATbuildnumber.txt'));
+			ATbuildNum++;
+			File.saveContent('./${pathBack}ATbuildnumber.txt', Std.string(ATbuildNum));
 		} else {
 			#if USE_ADAPTED_ASSETS
 			Paths.assetsTree.addLibrary(ModsFolder.loadLibraryFromFolder('assets', './assets/', true));

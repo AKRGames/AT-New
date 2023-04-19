@@ -172,6 +172,7 @@ class MainMenuState extends MusicBeatState
 			{
 				case 'story mode':
 					FlxG.switchState(new StoryMenuState());
+					// FlxG.switchState(new RPGState());
 					trace("Story Menu Selected");
 
 				case 'freeplay':

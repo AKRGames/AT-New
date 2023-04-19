@@ -2,11 +2,11 @@ package funkin.game;
 
 import flixel.FlxState;
 
-var player:funkin.game.RPGCharacter;
-
-class RPGState extends FlxState
+class RPGState extends MusicBeatState
 {
-	override public function create()
+	var player:funkin.game.RPGCharacter;
+
+	override public function create():Void
 	{
         player = new RPGCharacter(69, 69);
         add(player);

@@ -148,7 +148,7 @@ class CoolUtil
 	public static function playMenuSong(fadeIn:Bool = false) {
 		if (FlxG.sound.music == null || !FlxG.sound.music.playing)
 		{
-			playMusic(Paths.music('freakyMenu'), 102, fadeIn ? 0 : 1);
+			playMusic(Paths.music('freakyMenu'), 84, fadeIn ? 0 : 1);
 			if (fadeIn)
 				FlxG.sound.music.fadeIn(4, 0, 0.7);
 		}

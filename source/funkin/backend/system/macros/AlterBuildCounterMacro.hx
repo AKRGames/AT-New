@@ -1,4 +1,4 @@
-package funkin.macros;
+package funkin.backend.system.macros;
 
 #if !macro
 import haxe.macro.Expr.Field;

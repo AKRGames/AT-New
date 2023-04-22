@@ -57,7 +57,7 @@ class TitleState extends MusicBeatState
 	function startIntro()
 	{
 		if (!initialized)
-			CoolUtil.playMenuSong(true);
+			CoolUtil.playMenuSong(false);
 
 		persistentUpdate = true;
 

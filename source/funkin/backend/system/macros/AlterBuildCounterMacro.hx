@@ -9,7 +9,7 @@ import sys.io.File;
 #end
 
 /**
- * Macro that loads the current build number from `ATbuildnumber.txt`, then make it available as an integer.
+ * Macro that loads the current build number from `ATbuildnumber.txt`, then makes it available as an integer.
  * 
  * `ATbuildnumber.txt` is automatically incremented when the engine is launched with `lime test windows`.
  */

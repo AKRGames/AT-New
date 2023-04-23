@@ -18,6 +18,7 @@ class Framerate extends Sprite {
 	public static var memoryCounter:MemoryCounter;
 	#if SHOW_BUILD_ON_FPS
 	public static var codenameBuildField:CodenameBuildField;
+	public static var ATBuildField:AlterTrackBuildField;
 	#end
 
 	public static var fontName:String = #if windows '${Sys.getEnv("windir")}\\Fonts\\consola.ttf' #else "_sans" #end;
@@ -69,6 +70,7 @@ class Framerate extends Sprite {
 		__addToList(memoryCounter = new MemoryCounter());
 		#if SHOW_BUILD_ON_FPS
 		__addToList(codenameBuildField = new CodenameBuildField());
+		__addToList(ATBuildField = new AlterTrackBuildField());
 		#end
 		__addCategory(new ConductorInfo());
 		__addCategory(new FlixelInfo());
@@ -106,8 +108,8 @@ class Framerate extends Sprite {
 		x = 10 + offset.x;
 		y = 2 + offset.y;
 
-		var width = Math.max(fpsCounter.width, #if SHOW_BUILD_ON_FPS Math.max(memoryCounter.width, codenameBuildField.width) #else memoryCounter.width #end) + (x*2);
-		var height = #if SHOW_BUILD_ON_FPS codenameBuildField.y + codenameBuildField.height #else memoryCounter.y + memoryCounter.height #end;
+		var width = Math.max(fpsCounter.width, #if SHOW_BUILD_ON_FPS Math.max(memoryCounter.width, ATBuildField.width) #else memoryCounter.width #end) + (x*2);
+		var height = #if SHOW_BUILD_ON_FPS ATBuildField.y + ATBuildField.height #else memoryCounter.y + memoryCounter.height #end;
 		bgSprite.x = -x;
 		bgSprite.y = offset.x;
 		bgSprite.scaleX = width;

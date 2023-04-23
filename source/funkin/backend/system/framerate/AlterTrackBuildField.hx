@@ -11,6 +11,6 @@ class AlterTrackBuildField extends TextField {
 		defaultTextFormat = Framerate.textFormat;
 		autoSize = LEFT;
 		multiline = wordWrap = false;
-		text = 'AlterTrack v0.0.0\nBuild ${AlterBuildCounterMacro.getATBuildNumber()}';
+		text = 'AlterTrack v0.0.0\nBuild ${funkin.backend.system.macros.AlterBuildCounterMacro.getATBuildNumber()}';
 	}
 }

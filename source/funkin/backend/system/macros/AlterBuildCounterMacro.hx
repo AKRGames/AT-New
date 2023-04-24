@@ -20,7 +20,8 @@ class AlterBuildCounterMacro {
     public static macro function getATBuildNumber():haxe.macro.Expr.ExprOf<Int> {
         #if !display
         var ATbuildNum:Int = Std.parseInt(File.getContent("ATbuildnumber.txt"));
-        return macro $v{ATbuildNum+1};
+        // return macro $v{ATbuildNum+1};
+		return macro $v{ATbuildNum};
         #else
         return macro $v{0};
         #end

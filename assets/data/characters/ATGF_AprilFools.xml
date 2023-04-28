@@ -1,4 +1,4 @@
 ﻿<!DOCTYPE codename-engine-character>
-<character isPlayer="true" flipX="true" x="0" y="350">
+<character isPlayer="true" flipX="true" x="0" y="0">
 	<anim name="idle"          anim="Idle"      fps="24" loop="false" x="0"  y="0"/>
 </character>

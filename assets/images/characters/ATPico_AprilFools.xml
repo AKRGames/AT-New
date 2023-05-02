@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TextureAtlas imagePath="ATPico.png">
-	<!-- Created with Adobe Animate version 19.2.0.405 -->
+<TextureAtlas imagePath="ATPico_AprilFools.png">
+	<!-- Created with Adobe Animate version 22.0.0.93 -->
 	<!-- http://www.adobe.com/products/animate.html -->
-	<SubTexture name="Pico Idle0000" x="100" y="100" width="345" height="649"/>
-	<SubTexture name="Pico Idle Alt0000" x="545" y="100" width="345" height="649"/>
+	<SubTexture name="Pico Idle0000" x="100" y="100" width="354" height="649"/>
+	<SubTexture name="Pico Idle Alt0000" x="554" y="100" width="355" height="649"/>
 </TextureAtlas>

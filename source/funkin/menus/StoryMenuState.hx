@@ -11,6 +11,7 @@ import flixel.util.FlxColor;
 import funkin.backend.FunkinText;
 import haxe.xml.Access;
 import flixel.text.FlxText;
+import funkin.editors.ui.UIButton;
 
 class StoryMenuState extends MusicBeatState {
 	public var characters:Map<String, MenuCharacter> = [];
@@ -39,10 +40,16 @@ class StoryMenuState extends MusicBeatState {
 
 	public var charFrames:Map<String, FlxFramesCollection> = [];
 
+	var hmm:UIButton;
+
 	public override function create() {
 		super.create();
 		loadXMLs();
 		persistentUpdate = persistentDraw = true;
+
+		// TEST THINGY
+		// hmm = new UIButton(FlxG.width - 69, weekTitle.y - 25, "rpg type shit (prototype)", function() {FlxG.switchState(new RPGState());});
+		// hmm = new UIButton(FlxG.width - 69, weekTitle.y - 25, "rpg type shit (prototype)", null, 130, 32);
 
 		// WEEK INFO
 		blackBar = new FlxSprite(0, 0).makeGraphic(1, 1, 0xFFFFFFFF);

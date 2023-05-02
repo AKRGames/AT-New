@@ -1,4 +1,4 @@
-package funkin.game;
+package altertrack.game;
 
 import flixel.FlxState;
 

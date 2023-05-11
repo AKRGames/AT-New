@@ -48,7 +48,7 @@ class StoryMenuState extends MusicBeatState {
 		persistentUpdate = persistentDraw = true;
 
 		// TEST THINGY
-		// hmm = new UIButton(FlxG.width - 69, weekTitle.y - 25, "rpg type shit (prototype)", function() {FlxG.switchState(new RPGState());});
+		// add(hmm = new UIButton(FlxG.width - 69, weekTitle.y - 25, "rpg type shit (prototype)", function() {FlxG.switchState(new RPGState());}));
 		// hmm = new UIButton(FlxG.width - 69, weekTitle.y - 25, "rpg type shit (prototype)", null, 130, 32);
 
 		// WEEK INFO

@@ -57,6 +57,10 @@ class Script extends FlxBasic implements IFlxDestroyable {
 				build: 2675, // 2675 being the last build num before it was removed
 				name: "Codename Engine"
 			},
+			"AlterTrack"	 => {
+				build: funkin.backend.system.macros.AlterBuildCounterMacro.getATBuildNumber(),
+				name: "AlterTrack"
+			},
 			"ModState"		  => funkin.backend.scripting.ModState,
 			"ModSubState"	   => funkin.backend.scripting.ModSubState,
 			"PlayState"		 => funkin.game.PlayState,

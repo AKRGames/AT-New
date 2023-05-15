@@ -1,10 +1,10 @@
-var multiplier:Float = camZoomingStrength = 1;
-
 function impact() {
-	if (camZoomingInterval < 1) camZoomingInterval = 1;
-	if (Options.camZoomOnBeat && camZooming && FlxG.camera.zoom < maxCamZoom && curBeat % camZoomingInterval == 0)
+	if (curStep == 0 || curStep == 16 || curStep == 32 || curStep == 48 || curStep == 64 || curStep == 72 || curStep == 80 || curStep == 128)
 	{
-		FlxG.camera.zoom += 0.015 * multiplier;
-		// camHUD.zoom += 0.03 * multiplier;
+		if (Options.camZoomOnBeat && camZooming && curBeat % camZoomingInterval == 0)
+		{
+			FlxG.camera.zoom += 0.015;
+			camHUD.zoom += 0.03;
+		}
 	}
 };

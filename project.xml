@@ -6,7 +6,7 @@
 		title="Friday Night Funkin': AlterTrack" main="funkin.backend.system.Main"
 		file="AlterTrack" packageName="com.dandevgroup.altertrack"
 		package="com.dandevgroup.altertrack"
-		version="0.0.1 beta 2" company="DanDevGroup" />
+		version="0.0.1 beta 3" company="DanDevGroup" />
 
 	<!-- 
 		CHANGE THE SAVE PATH & NAME FOR YOUR MOD HERE!

@@ -3,7 +3,15 @@ function impact() {
 	{
 		if (Options.camZoomOnBeat && camZooming && curBeat % camZoomingInterval == 0)
 		{
-			FlxG.camera.zoom += 0.015;
+			FlxG.camera.zoom += 1;
+			camHUD.zoom += 0.03;
+		}
+	}
+	if (curStep == 26 || curStep == 29 || curStep == 58 || curStep == 61 || curStep == 90 || curStep == 93 || curStep == 96 || curStep == 100 || curStep == 104 || curStep == 108)
+	{
+		if (Options.camZoomOnBeat && camZooming && curBeat % camZoomingInterval == 0)
+		{
+			FlxG.camera.zoom += 0.5;
 			camHUD.zoom += 0.03;
 		}
 	}

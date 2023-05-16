@@ -552,6 +552,8 @@ class PlayState extends MusicBeatState
 		switch(SONG.meta.name) {
 			// case "":
 				// ADD YOUR HARDCODED SCRIPTS HERE!
+			case "WEED CARD":
+				impact();
 			default:
 				for(content in [
 					Paths.getFolderContent('songs/${SONG.meta.name.toLowerCase()}/scripts', true, fromMods ? MODS : BOTH),

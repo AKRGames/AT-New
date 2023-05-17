@@ -1,18 +1,83 @@
-function create() {
-	if (curStep == 0 || curStep == 16 || curStep == 32 || curStep == 48 || curStep == 64 || curStep == 72 || curStep == 80 || curStep == 128)
+function stepHit(curStep) {
+	switch(curStep)
 	{
-		if (Options.camZoomOnBeat && camZooming && curBeat % camZoomingInterval == 0)
+		case 0:
+			impact();
+		case 16:
+			impact();
+		case 26:
+			impactSoft();
+		case 29:
+			impactSoft();
+		case 32:
+			impact();
+		case 48:
+			impact();
+		case 58:
+			impactSoft();
+		case 61:
+			impactSoft();
+		case 64:
+			impact();
+		case 72:
+			impact();
+		case 80:
+			impact();
+		case 90:
+			impactSoft();
+		case 93:
+			impactSoft();
+		case 96:
+			impactSoft();
+		case 100:
+			impactSoft();
+		case 104:
+			impactSoft();
+		case 104:
+			impactSoft();
+		case 108:
+			impactSoft();
+		case 112:
+			impactSofter();
+		case 114:
+			impactSofter();
+		case 116:
+			impactSofter();
+		case 118:
+			impactSofter();
+		case 128:
+			impact();
+	}
+};
+
+function impact() {
+	if (Options.camZoomOnBeat && camZooming)
 		{
 			FlxG.camera.zoom += 1;
 			camHUD.zoom += 0.03;
 		}
-	}
-	if (curStep == 26 || curStep == 29 || curStep == 58 || curStep == 61 || curStep == 90 || curStep == 93 || curStep == 96 || curStep == 100 || curStep == 104 || curStep == 108)
-	{
-		if (Options.camZoomOnBeat && camZooming && curBeat % camZoomingInterval == 0)
+};
+
+function impactSoft() {
+	if (Options.camZoomOnBeat && camZooming)
 		{
 			FlxG.camera.zoom += 0.5;
 			camHUD.zoom += 0.03;
 		}
-	}
 };
+
+function impactSoft() {
+	if (Options.camZoomOnBeat && camZooming)
+		{
+			FlxG.camera.zoom += 0.5;
+			camHUD.zoom += 0.03;
+		}
+};
+
+function impactSofter() {
+	if (Options.camZoomOnBeat && camZooming)
+		{
+			FlxG.camera.zoom += 0.25;
+			camHUD.zoom += 0.03;
+		}
+};	

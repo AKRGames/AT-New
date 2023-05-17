@@ -87,7 +87,6 @@ abstract ChartEventType(Int) from Int to Int {
 	 *  - Target Strumline ID (Int)
 	 */
 	var CAM_MOVEMENT = 1;
-
 	/**
 	 * BPM CHANGE EVENT
 	 * Params:
@@ -101,4 +100,10 @@ abstract ChartEventType(Int) from Int to Int {
 	 *  - Whenever its going to be toggled or not (Bool)
 	 */
 	var ALT_ANIM_TOGGLE = 3;
+
+	/**
+	 * Returns all usable event types.
+	 */
+	public static inline function getChartEventTypes():Array<ChartEventType>
+		return [CUSTOM, CAM_MOVEMENT, BPM_CHANGE, ALT_ANIM_TOGGLE];
 }

@@ -12,7 +12,7 @@ import funkin.menus.TitleState;
 import flixel.FlxGame;
 import flixel.FlxState;
 import openfl.Assets;
-import flash.Lib;
+import openfl.Lib;
 import openfl.display.FPS;
 import openfl.display.Sprite;
 import openfl.events.Event;
@@ -45,10 +45,8 @@ class Main extends Sprite
 	public static var framerateSprite:funkin.backend.system.framerate.Framerate;
 	#end
 
-	var gameWidth:Int = 1280; // Width of the game in pixels (might be less / more in actual pixels depending on your zoom).
-	var gameHeight:Int = 720; // Height of the game in pixels (might be less / more in actual pixels depending on your zoom).
-	var zoom:Float = 1; // If -1, zoom is automatically calculated to fit the window dimensions.
-	var framerate:Int = 120; // How many frames per second the game should run at.
+	var gameWidth:Int = 1280; // Width of the game in pixels (might be less / more in actual pixels).
+	var gameHeight:Int = 720; // Height of the game in pixels (might be less / more in actual pixels).
 	var skipSplash:Bool = true; // Whether to skip the flixel splash screen that appears in release mode.
 	var startFullscreen:Bool = false; // Whether to start the game in fullscreen on desktop targets
 
@@ -65,9 +63,7 @@ class Main extends Sprite
 	public function new()
 	{
 		super();
-		#if windows NativeAPI.setDarkMode(true); #end
-
-		addChild(game = new FunkinGame(gameWidth, gameHeight, MainState, framerate, framerate, skipSplash, startFullscreen));
+		addChild(game = new FunkinGame(gameWidth, gameHeight, MainState, Options.framerate, Options.framerate, skipSplash, startFullscreen));
 
 		#if !mobile
 		addChild(framerateSprite = new funkin.backend.system.framerate.Framerate());
@@ -87,7 +83,7 @@ class Main extends Sprite
 		#else
 			""
 		#end;
-	public static var startedFromSource:Bool = false;
+	public static var startedFromSource:Bool = #if TEST_BUILD true #else false #end;
 
 
 	private static var __threadCycle:Int = 0;
@@ -127,26 +123,14 @@ class Main extends Sprite
 		funkin.backend.scripting.GlobalScript.init();
 		#end
 
-		#if sys
-		if (startedFromSource = Sys.args().contains("-livereload")) {
-			#if USE_SOURCE_ASSETS
-			#if windows
-			trace("Used lime test windows. Switching into source assets.");
-			#elseif mac
-			trace("Used lime test mac. Switching into source assets.");
-			#elseif linux
-			trace("Used lime test linux. Switching into source assets.");
-			#end
+		#if (sys && TEST_BUILD)
+			trace("Used cne test / cne build. Switching into source assets.");
 			#if MOD_SUPPORT
-			ModsFolder.modsPath = './${pathBack}mods/';
+				ModsFolder.modsPath = './${pathBack}mods/';
 			#end
 			Paths.assetsTree.__defaultLibraries.push(ModsFolder.loadLibraryFromFolder('assets', './${pathBack}assets/', true));
-			#end
-		} else {
-			#if USE_ADAPTED_ASSETS
+		#elseif USE_ADAPTED_ASSETS
 			Paths.assetsTree.__defaultLibraries.push(ModsFolder.loadLibraryFromFolder('assets', './assets/', true));
-			#end
-		}
 		#end
 
 
@@ -213,8 +197,6 @@ class Main extends Sprite
 			openfl.display3D.utils.UInt8Buff._pools.clear();
 		}
 
-		MemoryUtil.clearMinor();
 		MemoryUtil.clearMajor();
-		MemoryUtil.clearMinor();
 	}
 }

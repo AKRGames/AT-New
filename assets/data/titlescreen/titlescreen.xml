@@ -1,14 +1,14 @@
 <!DOCTYPE codename-titlestate >
 <titlestate>
-    <sprites folder="menus/titlescreen">
-        <sprite name="logo" sprite="logo" x="-150" y="-100" />
-        <sprite name="gf" sprite="gf" x="512" y="50">
-            <anim name="danceLeft" anim="gfDance" indices="30,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14" />
-            <anim name="danceRight" anim="gfDance" indices="15,16,17,18,19,20,21,22,23,24,25,26,27,28,29" />
-        </sprite>
+	<sprites folder="menus/titlescreen">
+		<sprite name="logo" sprite="logo" x="-150" y="-100" />
+		<sprite name="gf" sprite="gf" x="512" y="50">
+			<anim name="danceLeft" anim="gfDance" indices="30,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14" />
+			<anim name="danceRight" anim="gfDance" indices="15,16,17,18,19,20,21,22,23,24,25,26,27,28,29" />
+		</sprite>
 
-        <titleEnter sprite="titleEnter" x="-150" y="-100" />
-    </sprites>
+		<titleEnter sprite="titleEnter" x="-150" y="-100" />
+	</sprites>
 
     <intro length="16">
         <text beat="0">
@@ -20,7 +20,7 @@
             <line text="presents" />
         </text>
 
-        <text beat="4" /> <!-- clears the screen !-->
+		<text beat="4" /> <!-- clears the screen !-->
 
         <text beat="5">
             <line text="A modification for" />
@@ -32,11 +32,11 @@
             <sprite path="menus/titlescreen/newgrounds_logo" scale="0.8"/>
         </text>
 
-        <text beat="8" /> <!-- clears the screen !-->
+		<text beat="8" /> <!-- clears the screen !-->
 
-        <text beat="9">
-            <introtext line="1" />
-        </text>
+		<text beat="9">
+			<introtext line="1" />
+		</text>
 
         <text beat="10">
             <introtext line="1" />

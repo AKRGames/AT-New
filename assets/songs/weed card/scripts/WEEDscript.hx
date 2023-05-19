@@ -33,8 +33,6 @@ function stepHit(curStep) {
 			impactSoft();
 		case 104:
 			impactSoft();
-		case 104:
-			impactSoft();
 		case 108:
 			impactSoft();
 		case 112:
@@ -54,14 +52,6 @@ function impact() {
 	if (Options.camZoomOnBeat && camZooming)
 		{
 			FlxG.camera.zoom += 1;
-			camHUD.zoom += 0.03;
-		}
-};
-
-function impactSoft() {
-	if (Options.camZoomOnBeat && camZooming)
-		{
-			FlxG.camera.zoom += 0.5;
 			camHUD.zoom += 0.03;
 		}
 };

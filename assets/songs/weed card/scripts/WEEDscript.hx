@@ -23,6 +23,8 @@ function stepHit(curStep) {
 			impact();
 		case 80:
 			impact();
+		case 88:
+			impactSofter();
 		case 90:
 			impactSoft();
 		case 93:
@@ -45,29 +47,75 @@ function stepHit(curStep) {
 			impactSofter();
 		case 128:
 			impact();
+		case 256:
+			impact();
+		case 288:
+			impact();
+		case 320:
+			impact();
+		case 336:
+			impact();
+		case 352:
+			impactSoft();
+		case 360:
+			impactSoft();
+		case 368:
+			impactSoft();
+		case 372:
+			impactSoft();
+		case 376:
+			impactSofter();
+		case 378:
+			impactSofter();
+		case 380:
+			impactSoftest();
+		case 381:
+			impactSoftest();
+		case 382:
+			impactSoftest();
+		case 383:
+			impactSoftest();
+		case 384:
+			negativeImpact();
 	}
 };
 
 function impact() {
-	if (Options.camZoomOnBeat && camZooming)
+	if (funkin.options.Options.camZoomOnBeat && funkin.game.PlayState.camZooming)
 		{
-			FlxG.camera.zoom += 1;
-			camHUD.zoom += 0.03;
+			flixel.FlxG.camera.zoom += 1;
+			funkin.game.PlayState.camHUD.zoom += 0.03;
 		}
 };
 
 function impactSoft() {
-	if (Options.camZoomOnBeat && camZooming)
+	if (funkin.options.Options.camZoomOnBeat && funkin.game.PlayState.camZooming)
 		{
-			FlxG.camera.zoom += 0.5;
-			camHUD.zoom += 0.03;
+			flixel.FlxG.camera.zoom += 0.5;
+			funkin.game.PlayState.camHUD.zoom += 0.03;
 		}
 };
 
 function impactSofter() {
-	if (Options.camZoomOnBeat && camZooming)
+	if (funkin.options.Options.camZoomOnBeat && funkin.game.PlayState.camZooming)
 		{
-			FlxG.camera.zoom += 0.25;
-			camHUD.zoom += 0.03;
+			flixel.FlxG.camera.zoom += 0.25;
+			funkin.game.PlayState.camHUD.zoom += 0.03;
 		}
-};	
+};
+
+function impactSoftest() {
+	if (funkin.options.Options.camZoomOnBeat && funkin.game.PlayState.camZooming)
+		{
+			flixel.FlxG.camera.zoom += 0.125;
+			funkin.game.PlayState.camHUD.zoom += 0.03;
+		}
+};
+
+function negativeImpact() {
+	if (funkin.options.Options.camZoomOnBeat && funkin.game.PlayState.camZooming)
+		{
+			flixel.FlxG.camera.zoom += -1;
+			funkin.game.PlayState.camHUD.zoom += 0.03;
+		}
+};

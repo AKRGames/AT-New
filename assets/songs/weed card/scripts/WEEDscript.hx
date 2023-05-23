@@ -1,3 +1,10 @@
+import flixel.FlxCamera;
+
+var camZoomOnBeat:Bool = Options.camZoomOnBeat;
+var camZooming:Bool = PlayState.camZooming;
+var camera:FlxCamera = FlxG.camera;
+var camHUD:HudCamera = PlayState.camHUD;
+
 function stepHit(curStep) {
 	switch(curStep)
 	{
@@ -81,41 +88,41 @@ function stepHit(curStep) {
 };
 
 function impact() {
-	if (funkin.options.Options.camZoomOnBeat && funkin.game.PlayState.camZooming)
+	if (camZoomOnBeat && camZooming)
 		{
-			flixel.FlxG.camera.zoom += 1;
-			funkin.game.PlayState.camHUD.zoom += 0.03;
+			camera.zoom += 1;
+			camHUD.zoom += 0.03;
 		}
 };
 
 function impactSoft() {
-	if (funkin.options.Options.camZoomOnBeat && funkin.game.PlayState.camZooming)
+	if (camZoomOnBeat && camZooming)
 		{
-			flixel.FlxG.camera.zoom += 0.5;
-			funkin.game.PlayState.camHUD.zoom += 0.03;
+			camera.zoom += 0.5;
+			camHUD.zoom += 0.03;
 		}
 };
 
 function impactSofter() {
-	if (funkin.options.Options.camZoomOnBeat && funkin.game.PlayState.camZooming)
+	if (camZoomOnBeat && camZooming)
 		{
-			flixel.FlxG.camera.zoom += 0.25;
-			funkin.game.PlayState.camHUD.zoom += 0.03;
+			camera.zoom += 0.25;
+			camHUD.zoom += 0.03;
 		}
 };
 
 function impactSoftest() {
-	if (funkin.options.Options.camZoomOnBeat && funkin.game.PlayState.camZooming)
+	if (camZoomOnBeat && camZooming)
 		{
-			flixel.FlxG.camera.zoom += 0.125;
-			funkin.game.PlayState.camHUD.zoom += 0.03;
+			camera.zoom += 0.125;
+			camHUD.zoom += 0.03;
 		}
 };
 
 function negativeImpact() {
-	if (funkin.options.Options.camZoomOnBeat && funkin.game.PlayState.camZooming)
+	if (camZoomOnBeat && camZooming)
 		{
-			flixel.FlxG.camera.zoom += -1;
-			funkin.game.PlayState.camHUD.zoom += 0.03;
+			camera.zoom += -1;
+			camHUD.zoom += 0.03;
 		}
 };

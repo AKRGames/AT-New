@@ -1,9 +1,7 @@
-import flixel.FlxCamera;
-
-var camZoomOnBeat:Bool = Options.camZoomOnBeat;
-var camZooming:Bool = PlayState.camZooming;
-var camera:FlxCamera = FlxG.camera;
-var camHUD:HudCamera = PlayState.camHUD;
+var daCamZoomingOnDaBeet:Bool = Options.camZoomOnBeat;
+var daCamZooming:Bool = PlayState.camZooming;
+var daCamera:FlxCamera = FlxG.camera;
+var wtfIsAHUD:HudCamera = PlayState.camHUD;
 
 function stepHit(curStep) {
 	switch(curStep)
@@ -88,41 +86,41 @@ function stepHit(curStep) {
 };
 
 function impact() {
-	if (camZoomOnBeat && camZooming)
+	if (daCamZoomingOnDaBeet && daCamZooming)
 		{
-			camera.zoom += 1;
-			camHUD.zoom += 0.03;
+			daCamera.zoom += 1;
+			wtfIsAHUD.zoom += 0.03;
 		}
 };
 
 function impactSoft() {
-	if (camZoomOnBeat && camZooming)
+	if (daCamZoomingOnDaBeet && daCamZooming)
 		{
-			camera.zoom += 0.5;
-			camHUD.zoom += 0.03;
+			daCamera.zoom += 0.5;
+			wtfIsAHUD.zoom += 0.03;
 		}
 };
 
 function impactSofter() {
-	if (camZoomOnBeat && camZooming)
+	if (daCamZoomingOnDaBeet && daCamZooming)
 		{
-			camera.zoom += 0.25;
-			camHUD.zoom += 0.03;
+			daCamera.zoom += 0.25;
+			wtfIsAHUD.zoom += 0.03;
 		}
 };
 
 function impactSoftest() {
-	if (camZoomOnBeat && camZooming)
+	if (daCamZoomingOnDaBeet && daCamZooming)
 		{
-			camera.zoom += 0.125;
-			camHUD.zoom += 0.03;
+			daCamera.zoom += 0.125;
+			wtfIsAHUD.zoom += 0.03;
 		}
 };
 
 function negativeImpact() {
-	if (camZoomOnBeat && camZooming)
+	if (daCamZoomingOnDaBeet && daCamZooming)
 		{
-			camera.zoom += -1;
-			camHUD.zoom += 0.03;
+			daCamera.zoom += -1;
+			wtfIsAHUD.zoom += 0.03;
 		}
 };

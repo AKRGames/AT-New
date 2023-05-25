@@ -4,7 +4,7 @@ import flixel.FlxState;
 
 class RPGState extends MusicBeatState
 {
-	var player:funkin.game.RPGCharacter;
+	var player:RPGCharacter;
 
 	override public function create():Void
 	{

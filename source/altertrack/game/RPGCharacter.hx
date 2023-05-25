@@ -2,9 +2,7 @@ package altertrack.game;
 
 import flixel.FlxG;
 import flixel.FlxSprite;
-import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
-import flixel.util.FlxTimer;
 
 class RPGCharacter extends FlxSprite
 {
@@ -51,13 +49,13 @@ class RPGCharacter extends FlxSprite
 		{
 			if (walkAway)
 			{
-				thiccness -= 1
-				tallness -= 1
+				thiccness -= 1;
+				tallness -= 1;
 			}
 			else if (walkTowards)
 			{
-				thiccness += 1
-				tallness += 1
+				thiccness += 1;
+				tallness += 1;
 			}
 		}
 	}

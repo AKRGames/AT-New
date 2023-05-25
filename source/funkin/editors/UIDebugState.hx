@@ -94,7 +94,7 @@ class UIDebugState extends UIState {
 					onClick: function(t) {}
 				},
 				{
-					label: "4",
+					label: "new thingy",
 					onClick: function(t) {}
 				}
 			]));

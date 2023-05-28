@@ -82,6 +82,60 @@ function stepHit(curStep) {
 			impactSoftest();
 		case 384:
 			negativeImpact();
+		case 416:
+			impact();
+		case 440:
+			impactSoft();
+		case 448:
+			impact();
+		case 456:
+			impactSoft();
+		case 462:
+			impactSoftest();
+		case 466:
+			impactSoftest();
+		case 468:
+			impact();
+		case 472:
+			impactSoft();
+		case 480:
+			impact();
+		case 488:
+			impactSoft();
+		case 494:
+			impactSoftest();
+		case 498:
+			impactSoftest();
+		case 500:
+			impact();
+		case 504:
+			impactSoft();
+		case 512:
+			impact();
+		case 515:
+			impactSoftest();
+		case 516:
+			impactSoft();
+		case 518:
+			impactSoftest();
+		case 520:
+			impact();
+		case 523:
+			impactSoftest();
+		case 524:
+			impactSoft();
+		case 526:
+			impactSoftest();
+		case 528:
+			impactSoft();
+		case 530:
+			impactSoft();
+		case 532:
+			impactSoft();
+		case 534:
+			impactSoft();
+		case 672:
+			impact();
 	}
 };
 

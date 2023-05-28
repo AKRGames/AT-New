@@ -6,7 +6,7 @@ import flixel.util.FlxColor;
 
 class RPGCharacter extends FlxSprite
 {
-	static inline var SPEED:Float = 100;
+	static inline var SPEED:Float = 250;
 
 	var thiccness:Int = 128;
 	var tallness:Int = 256;
@@ -21,18 +21,12 @@ class RPGCharacter extends FlxSprite
 
 	function updateMovement()
 	{
-		var walkAway:Bool = false;
-		var walkTowards:Bool = false;
 		var left:Bool = false;
 		var right:Bool = false;
 
-		walkAway = FlxG.keys.anyPressed([UP, W]);
-		walkTowards = FlxG.keys.anyPressed([DOWN, S]);
 		left = FlxG.keys.anyPressed([LEFT, A]);
 		right = FlxG.keys.anyPressed([RIGHT, D]);
 
-		if (walkAway && walkTowards)
-			walkAway = walkTowards = false;
 		if (left && right)
 			left = right = false;
 
@@ -44,19 +38,6 @@ class RPGCharacter extends FlxSprite
 			else if (right)
 				newAngle = 0;
 			velocity.setPolarDegrees(SPEED, newAngle);
-		}
-		if (walkAway || walkTowards)
-		{
-			if (walkAway)
-			{
-				thiccness -= 1;
-				tallness -= 1;
-			}
-			else if (walkTowards)
-			{
-				thiccness += 1;
-				tallness += 1;
-			}
 		}
 	}
 

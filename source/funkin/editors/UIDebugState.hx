@@ -95,7 +95,7 @@ class UIDebugState extends UIState {
 				},
 				{
 					label: "new thingy",
-					onClick: function(t) {}
+					onClick: function(t) {FlxG.switchState(new altertrack.game.RPGState());}
 				}
 			]));
 		}, 130, 48));

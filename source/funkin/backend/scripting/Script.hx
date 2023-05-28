@@ -95,6 +95,9 @@ class Script extends FlxBasic implements IFlxDestroyable {
 			"EngineUtil"		=> funkin.backend.utils.EngineUtil,
 			"MemoryUtil"		=> funkin.backend.utils.MemoryUtil,
 			"BitmapUtil"		=> funkin.backend.utils.BitmapUtil,
+			
+			"RPGState" => altertrack.game.RPGState,
+			"RPGCharacter" => altertrack.game.RPGCharacter,
 		];
 	}
 	public static function getDefaultPreprocessors():Map<String, Dynamic> {

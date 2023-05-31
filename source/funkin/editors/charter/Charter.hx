@@ -187,7 +187,8 @@ class Charter extends UIState {
 					},
 					null,
 					{
-						label: "Edit metadata information"
+						label: "Edit metadata information",
+						onSelect: chart_edit_metadata
 					}
 				]
 			},
@@ -703,7 +704,8 @@ class Charter extends UIState {
 		if (true) {
 			__crochet = ((60 / Conductor.bpm) * 1000);
 
-			UIUtil.processShortcuts(topMenu);
+			if(FlxG.keys.justPressed.ANY)
+				UIUtil.processShortcuts(topMenu);
 
 			if (FlxG.keys.pressed.CONTROL) {
 				if (FlxG.mouse.wheel != 0) {
@@ -765,8 +767,14 @@ class Charter extends UIState {
 		}
 	}
 
-	var zoom:Float = 0;
-	var __camZoom:Float = 1;
+	var zoom(default, set):Float = 0;
+	var __camZoom(default, set):Float = 1;
+	function set_zoom(val:Float) {
+		return zoom = FlxMath.bound(val, -3.5, 1.75); // makes zooming not lag behind when continuing scrolling
+	}
+	function set___camZoom(val:Float) {
+		return __camZoom = FlxMath.bound(val, 0.1, 3);
+	}
 
 	// TOP MENU OPTIONS
 	#if REGION
@@ -928,6 +936,8 @@ class Charter extends UIState {
 	function _chart_enablescripts(t) {
 		t.icon = (Options.charterEnablePlaytestScripts = !Options.charterEnablePlaytestScripts) ? 1 : 0;
 	}
+	function chart_edit_metadata(_)
+		FlxG.state.openSubState(new MetaDataScreen(PlayState.SONG.meta));
 
 	function _playback_metronome(t) {
 		t.icon = (Options.charterMetronomeEnabled = !Options.charterMetronomeEnabled) ? 1 : 0;

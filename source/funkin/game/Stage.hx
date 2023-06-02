@@ -263,8 +263,9 @@ class StageCharPos extends FlxObject {
 	public function prepareCharacter(char:Character, id:Float = 0) {
 		char.setPosition(x + (id * charSpacingX), y + (id * charSpacingY));
 		char.scrollFactor.set(scrollFactor.x, scrollFactor.y);
-		char.scale.x *= scale.x;
-		char.scale.y *= scale.y;
+		char.scale.x *= scale.x; char.scale.y *= scale.y;
+		char.cameraOffset += FlxPoint.weak(camxoffset, camyoffset);
+		char.skew.x += skewX; char.skew.y += skewY;
 	}
 }
 typedef StageCharPosInfo = {

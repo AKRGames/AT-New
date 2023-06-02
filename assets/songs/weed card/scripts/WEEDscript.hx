@@ -1,3 +1,5 @@
+import flixel.FlxCamera;
+
 var daCamZoomingOnDaBeet:Bool = Options.camZoomOnBeat;
 var daCamZooming:Bool = PlayState.camZooming;
 var daCamera:FlxCamera = FlxG.camera;
@@ -6,136 +8,20 @@ var wtfIsAHUD:HudCamera = PlayState.camHUD;
 function stepHit(curStep) {
 	switch(curStep)
 	{
-		case 0:
+		case 0 | 16 | 32 | 48 | 64 | 72 | 80 | 128 | 256 | 288 | 320 | 336 | 416 | 448 | 468 | 480 | 500 | 512 | 520 | 672:
 			impact();
-		case 16:
-			impact();
-		case 26:
+		case 26 | 29 | 58 | 61 | 90 | 93 | 96 | 100 | 104 | 108 | 352 | 360 | 368 | 372 | 440 | 456 | 472 | 488 | 504 | 516 | 524 | 528 | 530 | 532 | 534:
 			impactSoft();
-		case 29:
-			impactSoft();
-		case 32:
-			impact();
-		case 48:
-			impact();
-		case 58:
-			impactSoft();
-		case 61:
-			impactSoft();
-		case 64:
-			impact();
-		case 72:
-			impact();
-		case 80:
-			impact();
-		case 88:
+		case 88 | 112 | 114 | 116 | 118 | 376 | 378:
 			impactSofter();
-		case 90:
-			impactSoft();
-		case 93:
-			impactSoft();
-		case 96:
-			impactSoft();
-		case 100:
-			impactSoft();
-		case 104:
-			impactSoft();
-		case 108:
-			impactSoft();
-		case 112:
-			impactSofter();
-		case 114:
-			impactSofter();
-		case 116:
-			impactSofter();
-		case 118:
-			impactSofter();
-		case 128:
-			impact();
-		case 256:
-			impact();
-		case 288:
-			impact();
-		case 320:
-			impact();
-		case 336:
-			impact();
-		case 352:
-			impactSoft();
-		case 360:
-			impactSoft();
-		case 368:
-			impactSoft();
-		case 372:
-			impactSoft();
-		case 376:
-			impactSofter();
-		case 378:
-			impactSofter();
-		case 380:
-			impactSoftest();
-		case 381:
-			impactSoftest();
-		case 382:
-			impactSoftest();
-		case 383:
+		case 380 | 381 | 382 | 383 | 462 | 466 | 494 | 498 | 515 | 518 | 523 | 526:
 			impactSoftest();
 		case 384:
 			negativeImpact();
-		case 416:
-			impact();
-		case 440:
-			impactSoft();
-		case 448:
-			impact();
-		case 456:
-			impactSoft();
-		case 462:
-			impactSoftest();
-		case 466:
-			impactSoftest();
-		case 468:
-			impact();
-		case 472:
-			impactSoft();
-		case 480:
-			impact();
-		case 488:
-			impactSoft();
-		case 494:
-			impactSoftest();
-		case 498:
-			impactSoftest();
-		case 500:
-			impact();
-		case 504:
-			impactSoft();
-		case 512:
-			impact();
-		case 515:
-			impactSoftest();
-		case 516:
-			impactSoft();
-		case 518:
-			impactSoftest();
-		case 520:
-			impact();
-		case 523:
-			impactSoftest();
-		case 524:
-			impactSoft();
-		case 526:
-			impactSoftest();
-		case 528:
-			impactSoft();
-		case 530:
-			impactSoft();
-		case 532:
-			impactSoft();
-		case 534:
-			impactSoft();
-		case 672:
-			impact();
+		case 512 | 640:
+			shakeTheCamera(camGame, 2, 1);
+		case 544:
+			shakeTheCamera(camGame, 8.04, 0.5);
 	}
 };
 
@@ -177,4 +63,14 @@ function negativeImpact() {
 			daCamera.zoom += -1;
 			wtfIsAHUD.zoom += 0.03;
 		}
+};
+
+function shakeTheCamera(camera:String, duration:Float, intensity:Float) {
+	switch(camera) {
+		case 'camHUD' | 'HUD': return PlayState.camHUD;
+		case 'camGame' | 'Game': return PlayState.camGame;
+	}
+	if(duration > 0 && intensity != 0) {
+		camera.shake(intensity, duration);
+	}
 };

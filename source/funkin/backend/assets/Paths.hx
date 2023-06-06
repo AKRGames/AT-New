@@ -2,15 +2,10 @@ package funkin.backend.assets;
 
 import flixel.graphics.frames.FlxFramesCollection;
 import haxe.io.Path;
-import funkin.backend.assets.LimeLibrarySymbol;
-import flixel.graphics.frames.FlxAtlasFrames;
-import openfl.utils.AssetType;
 import openfl.utils.Assets as OpenFlAssets;
-import funkin.backend.assets.ModsFolder;
 import funkin.backend.scripting.Script;
 import animateatlas.AtlasFrameMaker;
 import flixel.graphics.frames.FlxAtlasFrames;
-import flixel.system.FlxAssets.FlxGraphicAsset;
 import flixel.graphics.FlxGraphic;
 
 using StringTools;

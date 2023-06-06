@@ -70,7 +70,7 @@ function shakeTheCamera(camera:String, duration:Float, intensity:Float) {
 		case 'camHUD' | 'HUD': return PlayState.camHUD;
 		case 'camGame' | 'Game': return PlayState.camGame;
 	}
-	if(duration > 0 && intensity != 0) {
+	if (duration > 0 && intensity != 0) {
 		camera.shake(intensity, duration);
 	}
 };

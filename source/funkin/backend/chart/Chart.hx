@@ -119,8 +119,9 @@ class Chart {
 
 				for (event in cast(data.events, Array<Dynamic>)) {
 					if (Reflect.hasField(event, "type")) {
-						event.name = eventTypesToString[event.type];
-						event.type = null;
+						if(event.type != null)
+							event.name = eventTypesToString[event.type];
+						Reflect.deleteField(event, "type");
 					}
 				}
 
@@ -175,11 +176,11 @@ class Chart {
 		var meta = filteredChart.meta;
 
 		#if sys
-		if (!FileSystem.exists('${songFolderPath}\\charts\\'))
-			FileSystem.createDirectory('${songFolderPath}\\charts\\');
+		if (!FileSystem.exists('${songFolderPath}/charts/'))
+			FileSystem.createDirectory('${songFolderPath}/charts/');
 
-		var chartPath = '${songFolderPath}\\charts\\${difficulty.trim()}.json';
-		var metaPath = '${songFolderPath}\\meta.json';
+		var chartPath = '${songFolderPath}/charts/${difficulty.trim()}.json';
+		var metaPath = '${songFolderPath}/meta.json';
 
 		File.saveContent(chartPath, Json.stringify(filteredChart, null, saveSettings.prettyPrint == true ? "\t" : null));
 

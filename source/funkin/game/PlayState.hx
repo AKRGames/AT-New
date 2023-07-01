@@ -347,6 +347,11 @@ class PlayState extends MusicBeatState
 	public var defaultCamZoom:Float = 1.05;
 
 	/**
+	 * Camera zoom at which the hud lerps to.
+	 */
+	public var defaultHudZoom:Float = 1.0;
+
+	/**
 	 * Zoom for the pixel assets.
 	 */
 	public static var daPixelZoom:Float = 6;
@@ -554,12 +559,6 @@ class PlayState extends MusicBeatState
 				// case "":
 					// ADD YOUR HARDCODED SCRIPTS HERE!
 				default:
-					function addScript(file:String) {
-						var ext = Path.extension(file).toLowerCase();
-						if (Script.scriptExtensions.contains(ext))
-							scripts.add(Script.create(file));
-					}
-
 					for(content in [Paths.getFolderContent('songs/${SONG.meta.name.toLowerCase()}/scripts', true, fromMods ? MODS : BOTH), Paths.getFolderContent('data/charts/', true, fromMods ? MODS : BOTH)])
 						for(file in content) addScript(file);
 
@@ -621,8 +620,17 @@ class PlayState extends MusicBeatState
 				chars.push(char);
 			}
 
-			var strOffset:Float = strumLine.strumLinePos == null ? (strumLine.type == 1 ? 0.75 : 0.25) : strumLine.strumLinePos;
-			var strLine = new StrumLine(chars, strOffset, strumLine.type == 2 || (!coopMode && !((strumLine.type == 1 && !opponentMode) || (strumLine.type == 0 && opponentMode))), strumLine.type != 1, coopMode ? (strumLine.type == 1 ? controlsP1 : controlsP2) : controls);
+			var startingPos:FlxPoint = strumLine.strumPos == null ? switch (strumLine.type) {
+				case 1: FlxPoint.get((FlxG.width * 0.75) - ((Note.swagWidth * (strumLine.strumScale == null ? 1 : strumLine.strumScale)) * 2), this.strumLine.y);
+				default: FlxPoint.get((FlxG.width * 0.25) - ((Note.swagWidth * (strumLine.strumScale == null ? 1 : strumLine.strumScale)) * 2), this.strumLine.y);
+			} : FlxPoint.get(strumLine.strumPos[0], strumLine.strumPos[1]);
+
+			var strLine = new StrumLine(chars,
+				startingPos, 
+				strumLine.strumScale == null ? 1 : strumLine.strumScale,
+				strumLine.type == 2 || (!coopMode && !((strumLine.type == 1 && !opponentMode) || (strumLine.type == 0 && opponentMode))), 
+				strumLine.type != 1, coopMode ? (strumLine.type == 1 ? controlsP1 : controlsP2) : controls
+			);
 			strLine.cameras = [camHUD];
 			strLine.data = strumLine;
 			strLine.visible = (strumLine.visible != false);
@@ -656,6 +664,7 @@ class PlayState extends MusicBeatState
 
 		FlxG.camera.follow(camFollow, LOCKON, 0.04);
 		FlxG.camera.zoom = defaultCamZoom;
+		// camHUD.zoom = defaultHudZoom;
 		if (smoothTransitionData != null && smoothTransitionData.stage == curStage) {
 			FlxG.camera.scroll.set(smoothTransitionData.camX, smoothTransitionData.camY);
 			FlxG.camera.zoom = smoothTransitionData.camZoom;
@@ -1151,7 +1160,7 @@ class PlayState extends MusicBeatState
 		if (camZooming)
 		{
 			FlxG.camera.zoom = lerp(FlxG.camera.zoom, defaultCamZoom, 0.05);
-			camHUD.zoom = lerp(camHUD.zoom, 1, 0.05);
+			camHUD.zoom = lerp(camHUD.zoom, defaultHudZoom, 0.05);
 		}
 
 		// RESET = Quick Game Over Screen
@@ -1584,6 +1593,12 @@ class PlayState extends MusicBeatState
 		iconP2.updateHitbox();
 
 		scripts.call("beatHit", [curBeat]);
+	}
+
+	public function addScript(file:String) {
+		var ext = Path.extension(file).toLowerCase();
+		if (Script.scriptExtensions.contains(ext))
+			scripts.add(Script.create(file));
 	}
 
 	// GETTERS & SETTERS

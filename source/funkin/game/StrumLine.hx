@@ -17,11 +17,11 @@ class StrumLine extends FlxTypedGroup<Strum> {
 	 */
 	public var onHit:FlxTypedSignal<NoteHitEvent->Void> = new FlxTypedSignal<NoteHitEvent->Void>();
 	/**
-	 * Signal that triggers whenever a note is missed. Similar to onPlayerMiss and onDadMiss, except strumline specific.
+	 * Signal that triggers whenever a note is missed. Similar to onPlayerMiss, except strumline specific.
 	 * To add a listener, do
-	 * `strumLine.onMiss.add(function(e:NoteHitEvent) {});`
+	 * `strumLine.onMiss.add(function(e:NoteMissEvent) {});`
 	 */
-	public var onMiss:FlxTypedSignal<NoteHitEvent->Void> = new FlxTypedSignal<NoteHitEvent->Void>();
+	public var onMiss:FlxTypedSignal<NoteMissEvent->Void> = new FlxTypedSignal<NoteMissEvent->Void>();
 	/**
 	 * Signal that triggers whenever a note is being updated. Similar to onNoteUpdate, except strumline specific.
 	 * To add a listener, do
@@ -258,7 +258,10 @@ class StrumLine extends FlxTypedGroup<Strum> {
 			animPrefix = strumAnimPrefix[i % strumAnimPrefix.length];
 		var babyArrow:Strum = new Strum(startingPos.x + ((Note.swagWidth * strumScale) * i), startingPos.y);
 		babyArrow.ID = i;
-
+		
+		if(data.scrollSpeed != null)
+			babyArrow.scrollSpeed = data.scrollSpeed;
+		
 		var event = PlayState.instance.scripts.event("onStrumCreation", EventManager.get(StrumCreationEvent).recycle(babyArrow, PlayState.instance.strumLines.members.indexOf(this), i, animPrefix));
 
 		if (!event.cancelled) {

@@ -2,7 +2,7 @@ package funkin.menus;
 
 import haxe.Json;
 import funkin.backend.FunkinText;
-// import funkin.menus.credits.CreditsMain;
+import funkin.menus.credits.CreditsMain;
 import flixel.FlxState;
 import flixel.addons.transition.FlxTransitionableState;
 import flixel.effects.FlxFlicker;
@@ -76,7 +76,7 @@ class MainMenuState extends MusicBeatState
 
 		FlxG.camera.follow(camFollow, null, 0.06);
 
-		var versionShit:FunkinText = new FunkinText(5, FlxG.height - 2, 0, 'Codename Engine v0.1.0\nBeta: Commit ${funkin.backend.system.macros.GitCommitMacro.commitNumber} (${funkin.backend.system.macros.GitCommitMacro.commitHash})\nAlterTrack v${Application.current.meta.get('version')} build ${funkin.backend.system.macros.AlterBuildCounterMacro.getATBuildNumber()}\n[TAB] Open Mods menu\n');
+		var versionShit:FunkinText = new FunkinText(5, FlxG.height - 2, 0, 'Codename Engine \nAlpha: Commit ${funkin.backend.system.macros.GitCommitMacro.commitNumber} (${funkin.backend.system.macros.GitCommitMacro.commitHash})\nAlterTrack v${Application.current.meta.get('version')} build ${funkin.backend.system.macros.AlterBuildCounterMacro.getATBuildNumber()}\n[TAB] Open Mods menu\n');
 		versionShit.scrollFactor.set();
 		versionShit.y -= versionShit.height;
 		add(versionShit);
@@ -175,10 +175,8 @@ class MainMenuState extends MusicBeatState
 					trace("Freeplay Menu Selected");
 
 				case 'donate':
-					/*
 					FlxG.switchState(new CreditsMain());
 					trace("Credits Menu Selected");
-					*/
 
 				case 'options':
 					FlxG.switchState(new OptionsMenu());

@@ -45,6 +45,10 @@ class OptionsScreen extends FlxTypedSpriteGroup<OptionType> {
 			members[curSelected].selected = true;
 			if (controls.ACCEPT || FlxG.mouse.justReleased)
 				members[curSelected].onSelect();
+			if (controls.LEFT_P)
+				members[curSelected].onChangeSelection(-1);
+			if (controls.RIGHT_P)
+				members[curSelected].onChangeSelection(1);
 		}
 		if (controls.BACK || FlxG.mouse.justReleasedRight)
 			close();
@@ -54,15 +58,21 @@ class OptionsScreen extends FlxTypedSpriteGroup<OptionType> {
 		onClose(this);
 	}
 
-	public function changeSelection(sel:Int) {
-		if (members.length <= 0 || sel == 0) return;
+	public function changeSelection(sel:Int, force:Bool = false) {
+		if (members.length <= 0 || (sel == 0 && !force)) return;
 
 		CoolUtil.playMenuSFX(SCROLL);
-
 		curSelected = FlxMath.wrap(curSelected + sel, 0, members.length-1);
-
-		for(o in members)
 		members[curSelected].selected = true;
+		updateMenuDesc();
+	}
+
+	public function updateMenuDesc(?customTxt:String) {
+		if (parent.treeParent == null) return;
+		
+		var text:String = members[curSelected].desc;
+		if (customTxt != null) text = customTxt;
+		parent.treeParent.updateDesc(text);
 	}
 
 	public dynamic function onClose(o:OptionsScreen) {}

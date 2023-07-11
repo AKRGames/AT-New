@@ -620,13 +620,14 @@ class PlayState extends MusicBeatState
 				chars.push(char);
 			}
 
-			var startingPos:FlxPoint = strumLine.strumPos == null ? switch (strumLine.type) {
-				case 1: FlxPoint.get((FlxG.width * 0.75) - ((Note.swagWidth * (strumLine.strumScale == null ? 1 : strumLine.strumScale)) * 2), this.strumLine.y);
-				default: FlxPoint.get((FlxG.width * 0.25) - ((Note.swagWidth * (strumLine.strumScale == null ? 1 : strumLine.strumScale)) * 2), this.strumLine.y);
-			} : FlxPoint.get(strumLine.strumPos[0], strumLine.strumPos[1]);
+			var strOffset:Float = strumLine.strumLinePos == null ? (strumLine.type == 1 ? 0.75 : 0.25) : strumLine.strumLinePos;
+
+			var startingPos:FlxPoint = strumLine.strumPos == null ?
+				FlxPoint.get((FlxG.width * strOffset) - ((Note.swagWidth * (strumLine.strumScale == null ? 1 : strumLine.strumScale)) * 2), this.strumLine.y) :
+				FlxPoint.get(strumLine.strumPos[0], strumLine.strumPos[1]);
 
 			var strLine = new StrumLine(chars,
-				startingPos, 
+				startingPos,
 				strumLine.strumScale == null ? 1 : strumLine.strumScale,
 				strumLine.type == 2 || (!coopMode && !((strumLine.type == 1 && !opponentMode) || (strumLine.type == 0 && opponentMode))), 
 				strumLine.type != 1, coopMode ? (strumLine.type == 1 ? controlsP1 : controlsP2) : controls
@@ -1368,21 +1369,22 @@ class PlayState extends MusicBeatState
 		var directionID:Null<Int> = note == null ? direction : note.strumID;
 		if (playerID == null || directionID == null || playerID == -1) return;
 
-		var event:NoteHitEvent = scripts.event("onPlayerMiss", EventManager.get(NoteHitEvent).recycle(true, false, false, note, strumLines.members[playerID].characters, true, note != null ? note.noteType : null, "", "", "", directionID, -10, 0, note != null ? -0.0475 : -0.04, "shit"));
+		var event:NoteMissEvent = scripts.event("onPlayerMiss", EventManager.get(NoteMissEvent).recycle(note, -10, 1, muteVocalsOnMiss, note != null ? -0.0475 : -0.04, Paths.soundRandom('missnote', 1, 3), FlxG.random.float(0.1, 0.2), note == null, combo > 5, "sad", true, true, "miss", strumLines.members[playerID].characters, playerID, note != null ? note.noteType : null, directionID, 0));
 		strumLine.onMiss.dispatch(event);
 		if (event.cancelled) return;
 
 		if (strumLine != null) strumLine.addHealth(event.healthGain);
-		if (gf != null && combo > 5 && gf.hasAnimation('sad'))
-			gf.playAnim('sad', event.forceAnim, MISS);
-		combo = 0;
+		if (gf != null && event.gfSad && gf.hasAnimation(event.gfSadAnim))
+			gf.playAnim(event.gfSadAnim, event.forceGfAnim, MISS);
 
-		songScore -= 10;
-		misses++;
+		if (event.resetCombo) combo = 0;
 
-		FlxG.sound.play(Paths.soundRandom('missnote', 1, 3), FlxG.random.float(0.1, 0.2));
+		songScore += event.score;
+		misses += event.misses;
 
-		if (muteVocalsOnMiss) vocals.volume = 0;
+		if (event.playMissSound) FlxG.sound.play(event.missSound, event.missVolume);
+
+		if (event.muteVocals) vocals.volume = 0;
 
 		if (event.accuracy != null) {
 			accuracyPressedNotes++;
@@ -1391,16 +1393,17 @@ class PlayState extends MusicBeatState
 			updateRating();
 		}
 
-		for(char in event.characters) {
-			if (char == null) continue;
+		if (!event.animCancelled) {
+			for(char in event.characters) {
+				if (char == null) continue;
 
-			char.stunned = true;
-			char.playSingAnim(directionID, "miss", MISS);
+				if(event.stunned) char.stunned = true;
+				char.playSingAnim(directionID, event.animSuffix, MISS, event.forceAnim);
+			}
 		}
 
-		if (strumLine != null && note != null) {
+		if (event.deleteNote && strumLine != null && note != null)
 			strumLine.deleteNote(note);
-		}
 	}
 
 	@:dox(hide)
@@ -1447,7 +1450,7 @@ class PlayState extends MusicBeatState
 
 		var event:NoteHitEvent;
 		if (strumLine != null && !strumLine.cpu)
-			event = scripts.event("onPlayerHit", EventManager.get(NoteHitEvent).recycle(false, !note.isSustainNote, !note.isSustainNote, note, strumLine.characters, true, note.noteType, note.animSuffix.getDefault(strumLine.altAnim ? "-alt" : ""), "game/score/", "", note.strumID, score, note.isSustainNote ? null : accuracy, note.noteData > 0 ? 0.023 : 0.004, daRating, Options.splashesEnabled && !note.isSustainNote && daRating == "sick"));
+			event = scripts.event("onPlayerHit", EventManager.get(NoteHitEvent).recycle(false, !note.isSustainNote, !note.isSustainNote, note, strumLine.characters, true, note.noteType, note.animSuffix.getDefault(strumLine.altAnim ? "-alt" : ""), "game/score/", "", note.strumID, score, note.isSustainNote ? null : accuracy, 0.023, daRating, Options.splashesEnabled && !note.isSustainNote && daRating == "sick"));
 		else
 			event = scripts.event("onDadHit", EventManager.get(NoteHitEvent).recycle(false, false, false, note, strumLine.characters, false, note.noteType, note.animSuffix.getDefault(strumLine.altAnim ? "-alt" : ""), "game/score/", "", note.strumID, 0, null, 0, daRating, false));
 		strumLine.onHit.dispatch(event);
@@ -1462,7 +1465,7 @@ class PlayState extends MusicBeatState
 					updateRating();
 				}
 				if (event.countAsCombo) combo++;
-	
+
 				if (event.showRating || (event.showRating == null && event.player))
 				{
 					displayCombo(event);

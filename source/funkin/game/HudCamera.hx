@@ -19,7 +19,7 @@ class HudCamera extends FlxCamera {
 	// 	super.drawPixels(frame, pixels, matrix, transform, blend, smoothing, shader);
 	// }
 
-	public function alterScreenPosition(spr:FlxObject, pos:FlxPoint) {
+	public override function alterScreenPosition(spr:FlxObject, pos:FlxPoint) {
 		if (downscroll) {
 			var oldPoint = FlxPoint.get(pos.x, pos.y);
 			pos.set(pos.x, height - pos.y - spr.height);

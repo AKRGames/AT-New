@@ -1,9 +1,7 @@
 package funkin.backend.system.modules;
 
-import lime.system.System;
 import funkin.backend.utils.NativeAPI;
 import openfl.Lib;
-import openfl.events.UncaughtErrorEvent;
 import openfl.events.ErrorEvent;
 import openfl.errors.Error;
 import openfl.events.UncaughtErrorEvent;
@@ -48,7 +46,7 @@ class CrashHandler {
 		e.stopPropagation();
 		e.stopImmediatePropagation();
 
-		NativeAPI.showMessageBox("Codename Engine Crash Handler", 'Uncaught Error:$m\n\n$stackLabel', MSG_ERROR);
+		NativeAPI.showMessageBox("Codename Engine Crash Handler", 'some shit happened: $m\n\n$stackLabel', MSG_ERROR);
 		#if sys
 		Sys.exit(1);
 		#end

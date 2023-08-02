@@ -1,16 +1,19 @@
 package funkin.editors.charter;
 
+import funkin.editors.charter.Charter.ICharterSelectable;
+import flixel.math.FlxPoint;
 import funkin.game.Character;
 import funkin.backend.system.Conductor;
 import funkin.game.HealthIcon;
 import funkin.backend.chart.ChartData.ChartEvent;
 
-class CharterEvent extends UISliceSprite {
+class CharterEvent extends UISliceSprite implements ICharterSelectable {
 	public var events:Array<ChartEvent>;
-
 	public var step:Float;
-
 	public var icons:Array<FlxSprite> = [];
+
+	public var selected:Bool = false;
+	public var draggable:Bool = true;
 
 	public function new(step:Float, ?events:Array<ChartEvent>) {
 		super(-100, (step * 40) - 17, 100, 34, 'editors/charter/event-spr');
@@ -25,6 +28,13 @@ class CharterEvent extends UISliceSprite {
 		for(k=>i in icons) {
 			i.follow(this, (k * 22) + 30 - (i.width / 2), (bHeight - i.height) / 2);
 		}
+
+		colorTransform.redMultiplier = colorTransform.greenMultiplier = colorTransform.blueMultiplier = selected ? 0.75 : 1;
+		colorTransform.redOffset = colorTransform.greenOffset = selected ? 96 : 0;
+		colorTransform.blueOffset = selected ? 168 : 0;
+
+		for (sprite in icons)
+			sprite.colorTransform = colorTransform;
 	}
 
 	private static function generateDefaultIcon(name:String) {
@@ -57,9 +67,18 @@ class CharterEvent extends UISliceSprite {
 
 	public override function onHovered() {
 		super.onHovered();
+		/*
 		if (FlxG.mouse.justReleased)
 			FlxG.state.openSubState(new CharterEventScreen(this));
+		*/
 	}
+
+	public function handleSelection(selectionBox:UISliceSprite):Bool {
+		return (selectionBox.x + selectionBox.bWidth > x) && (selectionBox.x < x + bWidth) && (selectionBox.y + selectionBox.bHeight > y) && (selectionBox.y < y + bHeight);
+	}
+
+	public function handleDrag(change:FlxPoint)
+		y = ((step += change.x) * 40) - 17;
 
 	public function refreshEventIcons() {
 		while(icons.length > 0) {
@@ -73,6 +92,13 @@ class CharterEvent extends UISliceSprite {
 			icons.push(spr);
 			members.push(spr);
 		}
+
+		draggable = true;
+		for (event in events)
+			if (event.name == "BPM Change") {
+				draggable = false;
+				break;
+			}
 
 		x = -(bWidth = 37 + (icons.length * 22));
 	}

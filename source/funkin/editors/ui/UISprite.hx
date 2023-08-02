@@ -17,11 +17,14 @@ class UISprite extends FlxSprite {
 	public var hoveredByChild:Bool = false;
 	public var pressed:Bool = false;
 
+	public var canBeHovered:Bool = true;
+
 	public var hoverCallback:Void->Void = null;
 
 	public var cursor:MouseCursor = ARROW;
 
 	public var focused(get, set):Bool;
+	public var selectable:Bool = true;
 
 	private inline function get_focused():Bool
 		return UIState.state.currentFocus == cast this;
@@ -43,7 +46,8 @@ class UISprite extends FlxSprite {
 		hoveredByChild = false;
 
 		super.update(elapsed);
-		updateButton();
+		if (selectable)
+			updateButton();
 
 		@:privateAccess {
 			__oldDefCams = FlxCamera._defaultCameras;
@@ -85,6 +89,16 @@ class UISprite extends FlxSprite {
 	}
 
 	public function updateButton() {
+		if(canBeHovered)
+			updateButtonHandler();
+		else {
+			if(FlxG.mouse.pressed) {
+				updateButtonHandler();
+			}
+		}
+	}
+
+	public function updateButtonHandler() {
 		UIState.state.updateButtonHandler(this, onHovered);
 	}
 

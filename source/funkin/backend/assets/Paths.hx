@@ -1,5 +1,6 @@
 package funkin.backend.assets;
 
+import lime.utils.AssetLibrary;
 import flixel.graphics.frames.FlxFramesCollection;
 import haxe.io.Path;
 import openfl.utils.Assets as OpenFlAssets;
@@ -92,7 +93,7 @@ class Paths
 		}
 		return getPath('images/$key.png', library);
 	}
-
+	
 	inline static public function script(key:String, ?library:String, isAssetsPath:Bool = false) {
 		var scriptPath = isAssetsPath ? key : getPath(key, library);
 		if (!OpenFlAssets.exists(scriptPath)) {
@@ -260,9 +261,9 @@ class Paths
 
 		var content:Array<String> = [];
 		#if MOD_SUPPORT
-		if (library is funkin.backend.assets.ModsAssetLibrary) {
+		if (library is funkin.backend.assets.IModsAssetLibrary) {
 			// easy task, can immediately scan for files!
-			var lib = cast(library, funkin.backend.assets.ModsAssetLibrary);
+			var lib = cast(library, funkin.backend.assets.IModsAssetLibrary);
 			content = lib.getFiles(libThing.symbolName);
 			if (addPath)
 				for(i in 0...content.length)
@@ -294,5 +295,15 @@ class Paths
 
 		return content;
 		*/
+	}
+}
+
+class ScriptPathInfo {
+	public var file:String;
+	public var library:AssetLibrary;
+
+	public function new(file:String, library:AssetLibrary) {
+		this.file = file;
+		this.library = library;
 	}
 }

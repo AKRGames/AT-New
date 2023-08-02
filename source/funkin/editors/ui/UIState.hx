@@ -8,6 +8,7 @@ import funkin.editors.ui.UIContextMenu.UIContextMenuCallback;
 import openfl.ui.Mouse;
 import funkin.editors.ui.UIContextMenu.UIContextMenuOption;
 import flixel.math.FlxPoint;
+import openfl.ui.MouseCursor;
 import flixel.math.FlxRect;
 
 class UIState extends MusicBeatState {
@@ -19,6 +20,8 @@ class UIState extends MusicBeatState {
 	public var buttonHandler:Void->Void = null;
 	public var hoveredSprite:UISprite = null;
 	public var currentFocus:IUIFocusable = null;
+
+	public var currentCursor:MouseCursor = ARROW;
 
 	private var __rect:FlxRect;
 	private var __mousePos:FlxPoint;
@@ -101,11 +104,13 @@ class UIState extends MusicBeatState {
 		if (FlxG.mouse.justReleased)
 			currentFocus = (hoveredSprite is IUIFocusable) ? (cast hoveredSprite) : null;
 
+		FlxG.sound.keysAllowed = currentFocus != null ? !(currentFocus is UITextBox) : true;
+
 		if (hoveredSprite != null) {
 			Mouse.cursor = hoveredSprite.cursor;
 			hoveredSprite = null;
 		} else {
-			Mouse.cursor = ARROW;
+			Mouse.cursor = currentCursor;
 		}
 	}
 
@@ -118,8 +123,10 @@ class UIState extends MusicBeatState {
 	}
 
 	public function closeCurrentContextMenu() {
-		if(curContextMenu != null)
+		if(curContextMenu != null) {
 			curContextMenu.close();
+			curContextMenu = null;
+		}
 	}
 
 	public function openContextMenu(options:Array<UIContextMenuOption>, ?callback:UIContextMenuCallback, ?x:Float, ?y:Float) {

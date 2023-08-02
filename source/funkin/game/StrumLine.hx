@@ -97,18 +97,42 @@ class StrumLine extends FlxTypedGroup<Strum> {
 	}
 
 	public function generate(strumLine:ChartStrumLine, ?startTime:Float) {
+		// TODO: implement double generate call support if needed
+
+		var total = 0;
 		if (strumLine.notes != null) for(note in strumLine.notes) {
 			if (startTime != null && startTime > note.time)
 				continue;
 
-			notes.add(new Note(this, note, false));
+			total++;
+
+			if (note.sLen > Conductor.stepCrochet * 0.75) {
+				var len:Float = note.sLen;
+				while(len > 10) {
+					total++;
+					len -= Math.min(len, Conductor.stepCrochet);
+				}
+			}
+		}
+
+		notes.preallocate(total);
+
+		var il = 0;
+
+		var prev:Note = null;
+
+		if (strumLine.notes != null) for(note in strumLine.notes) {
+			if (startTime != null && startTime > note.time)
+				continue;
+
+			notes.members[total-(il++)-1] = prev = new Note(this, note, false, prev);
 
 			if (note.sLen > Conductor.stepCrochet * 0.75) {
 				var len:Float = note.sLen;
 				var curLen:Float = 0;
 				while(len > 10) {
 					curLen = Math.min(len, Conductor.stepCrochet);
-					notes.add(new Note(this, note, true, curLen, note.sLen - len));
+					notes.members[total-(il++)-1] = prev = new Note(this, note, true, curLen, note.sLen - len, prev);
 					len -= curLen;
 				}
 			}
@@ -209,7 +233,7 @@ class StrumLine extends FlxTypedGroup<Strum> {
 		__justPressed = CoolUtil.getDefault(event.justPressed, []);
 		__justReleased = CoolUtil.getDefault(event.justReleased, []);
 
-		__notePerStrum = [for(_ in 0...members.length) null];
+		__notePerStrum = cast new haxe.ds.Vector(members.length);//[for(_ in 0...members.length) null];
 
 
 		if (__pressed.contains(true)) {
@@ -246,6 +270,12 @@ class StrumLine extends FlxTypedGroup<Strum> {
 	public inline function generateStrums(amount:Int = 4) {
 		for (i in 0...amount)
 			add(createStrum(i));
+	}
+
+	override function destroy() {
+		super.destroy();
+		if(startingPos != null)
+			startingPos.put();
 	}
 
 	/**

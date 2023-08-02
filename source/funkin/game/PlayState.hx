@@ -23,7 +23,6 @@ import flixel.util.FlxColor;
 import flixel.util.FlxSort;
 import flixel.util.FlxTimer;
 import haxe.io.Path;
-import lime.utils.Assets;
 import funkin.backend.system.Conductor;
 import funkin.game.cutscenes.*;
 
@@ -561,16 +560,14 @@ class PlayState extends MusicBeatState
 				default:
 					for(content in [Paths.getFolderContent('songs/${SONG.meta.name.toLowerCase()}/scripts', true, fromMods ? MODS : BOTH), Paths.getFolderContent('data/charts/', true, fromMods ? MODS : BOTH)])
 						for(file in content) addScript(file);
-
 					var songEvents:Array<String> = [];
-					for (event in SONG.events) 
+					for (event in SONG.events)
 						if (!songEvents.contains(event.name)) songEvents.push(event.name);
 
 					for (file in Paths.getFolderContent('data/events/', true, fromMods ? MODS : BOTH)) {
 						var fileName:String = Path.withoutExtension(Path.withoutDirectory(file));
 						if (EventsData.eventsList.contains(fileName) && songEvents.contains(fileName)) addScript(file);
 					}
-						
 			}
 		}
 
@@ -810,7 +807,7 @@ class PlayState extends MusicBeatState
 
 		startedCountdown = true;
 		Conductor.songPosition = 0;
-		Conductor.songPosition -= Conductor.crochet * introLength;
+		Conductor.songPosition -= Conductor.crochet * introLength - Conductor.songOffset;
 
 		var swagCounter:Int = 0;
 
@@ -1013,13 +1010,22 @@ class PlayState extends MusicBeatState
 	@:dox(hide)
 	override public function onFocus():Void
 	{
+		if (!paused && FlxG.autoPause) {
+			inst.resume();
+			vocals.resume();
+		}
 		scripts.call("onFocus");
+		updateDiscordPresence();
 		super.onFocus();
 	}
 
 	@:dox(hide)
 	override public function onFocusLost():Void
 	{
+		if (!paused && FlxG.autoPause) {
+			inst.pause();
+			vocals.pause();
+		}
 		scripts.call("onFocusLost");
 		updateDiscordPresence();
 		super.onFocusLost();
@@ -1032,7 +1038,7 @@ class PlayState extends MusicBeatState
 
 		FlxG.sound.music.play();
 		Conductor.songPosition = FlxG.sound.music.time;
-		vocals.time = Conductor.songPosition;
+		vocals.time = Conductor.songPosition + Conductor.songOffset;
 		vocals.play();
 		scripts.call("onVocalsResync");
 	}
@@ -1120,7 +1126,7 @@ class PlayState extends MusicBeatState
 		{
 			if (startedCountdown)
 			{
-				Conductor.songPosition += elapsed * 1000;
+				Conductor.songPosition += Conductor.songOffset + elapsed * 1000;
 				if (Conductor.songPosition >= 0)
 					startSong();
 			}

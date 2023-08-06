@@ -3,23 +3,33 @@ package funkin.backend.system;
 import funkin.backend.assets.AssetsLibraryList;
 import funkin.backend.system.framerate.SystemInfo;
 import openfl.utils.AssetLibrary;
+import openfl.utils.AssetCache;
 import openfl.text.TextFormat;
 import flixel.system.ui.FlxSoundTray;
+import funkin.backend.utils.NativeAPI;
+import funkin.menus.BetaWarningState;
+import funkin.menus.TitleState;
+import flixel.FlxGame;
+import flixel.FlxState;
 import openfl.Assets;
 import openfl.Lib;
+import openfl.display.FPS;
 import openfl.display.Sprite;
+import openfl.events.Event;
 import flixel.graphics.FlxGraphic;
 import flixel.addons.transition.FlxTransitionableState;
 import flixel.addons.transition.FlxTransitionSprite.GraphicTransTileDiamond;
 import flixel.addons.transition.TransitionData;
 import flixel.math.FlxPoint;
 import flixel.math.FlxRect;
+import lime.app.Application;
 import funkin.backend.system.modules.*;
 
 #if ALLOW_MULTITHREADING
 import sys.thread.Thread;
 #end
 #if sys
+import sys.io.File;
 #end
 import funkin.backend.assets.ModsFolder;
 
@@ -28,7 +38,8 @@ class Main extends Sprite
 	public static var instance:Main;
 
 	public static var modToLoad:String = null;
-	public static var forceGPUOnlyBitmapsOff:Bool = false;
+	// public static var forceGPUOnlyBitmapsOff:Bool = false;
+	public static var forceGPUOnlyBitmapsOff:Bool = true;
 
 	public static var scaleMode:FunkinRatioScaleMode;
 	#if !mobile

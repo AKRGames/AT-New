@@ -10,7 +10,7 @@ class RPGState extends funkin.backend.MusicBeatState
 
 	override public function create():Void
 	{
-        player = new RPGCharacter(69, FlxG.height - (69/2));
+        player = new RPGCharacter(69, FlxG.height - (69/4));
         add(player);
 		CoolUtil.playMusic(Paths.music('RPG/GONEloop'));
 		super.create();

@@ -26,17 +26,24 @@ class NdllUtil {
 
 	/**
 	 * Returns an function from a Haxe NDLL.
+	 * Limited to 25 argument due to a limitation
 	 *
 	 * @param ndll Name of the NDLL.
 	 * @param name Name of the function.
 	 * @param args Number of arguments of that function.
 	 */
-	public static function getFunction(ndll:String, name:String, args:Int) {
+	public static function getFunction(ndll:String, name:String, args:Int):Dynamic {
 		#if NDLLS_SUPPORTED
-		return getFunctionFromPath(Paths.ndll('$ndll-$os'), name, args);
+		var func:Dynamic = getFunctionFromPath(Paths.ndll('$ndll-$os'), name, args);
+
+		return Reflect.makeVarArgs(function(a:Array<Dynamic>) {
+			// This generates horrific code
+			return funkin.backend.system.macros.Utils.generateReflectionLike(25, "func", "a");
+			//return Reflect.callMethod(null, func, a); // wouldnt work for some reason, maybe cause like c++ functions doesnt have reflection enabled
+		});
 		#else
 		Logs.trace('NDLLs are not supported on this platform.', WARNING);
-		return function() {};
+		return noop;
 		#end
 	}
 
@@ -47,22 +54,24 @@ class NdllUtil {
 	 * @param name Name of the function.
 	 * @param args Number of arguments of that function.
 	 */
-	public static function getFunctionFromPath(ndll:String, name:String, args:Int) {
+	public static function getFunctionFromPath(ndll:String, name:String, args:Int):Dynamic {
 		#if NDLLS_SUPPORTED
 		if (!Assets.exists(ndll)) {
 			Logs.trace('Couldn\'t find ndll at ${ndll}.', WARNING);
-			return function() {};
+			return noop;
 		}
 		var func = lime.system.CFFI.load(Assets.getPath(ndll), name, args);
 
 		if (func == null) {
 			Logs.trace('Method ${name} in ndll ${ndll} with ${args} args was not found.', ERROR);
-			return function() {};
+			return noop;
 		}
 		return func;
 		#else
 		Logs.trace('NDLLs are not supported on this platform.', WARNING);
 		#end
-		return function() {};
+		return noop;
 	}
+
+	@:dox(hide) @:noCompletion static function noop() {}
 }

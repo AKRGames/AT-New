@@ -13,6 +13,7 @@ class CharacterInfoScreen extends UISubstateWindow {
 	public var gameOverCharTextBox:UITextBox;
 	public var antialiasingCheckbox:UICheckbox;
 	public var flipXCheckbox:UICheckbox;
+	public var iconColorWheel:UIColorwheel;
 	public var positionXStepper:UINumericStepper;
 	public var positionYStepper:UINumericStepper;
 	public var cameraXStepper:UINumericStepper;
@@ -36,7 +37,7 @@ class CharacterInfoScreen extends UISubstateWindow {
 	public override function create() {
 		winTitle = "Editing Character";
 		winWidth = 714;
-		winHeight = 500;
+		winHeight = 600;
 
 		super.create();
 
@@ -69,7 +70,11 @@ class CharacterInfoScreen extends UISubstateWindow {
 		add(flipXCheckbox);
 		addLabelOn(flipXCheckbox, "Flipped");
 
-		add(title = new UIText(spriteTextBox.x, spriteTextBox.y + 10 + 46 + 64, 0, "Character Data", 28));
+		iconColorWheel = new UIColorwheel(flipXCheckbox.x + 100, flipXCheckbox.y, character.iconColor);
+		add(iconColorWheel);
+		addLabelOn(iconColorWheel, "Icon Color");
+
+		add(title = new UIText(spriteTextBox.x, spriteTextBox.y + 10 + 46 + 64 + 100, 0, "Character Data", 28));
 
 		positionXStepper = new UINumericStepper(title.x, title.y + title.height + 36, character.globalOffset.x, 0.001, 2, null, null, 84);
 		add(positionXStepper);
@@ -120,6 +125,7 @@ class CharacterInfoScreen extends UISubstateWindow {
 			close();
 		}, 125);
 		closeButton.x -= closeButton.bWidth;
+		closeButton.color = 0xFFFF0000;
 		add(closeButton);
 		add(saveButton);
 	}
@@ -161,6 +167,8 @@ class CharacterInfoScreen extends UISubstateWindow {
 		xml.set("scale", Std.string(scaleStepper.value));
 		xml.set("antialiasing", antialiasingCheckbox.checked ? "true" : "false");
 		xml.set("sprite", spriteTextBox.label.text);
+		if (iconColorWheel.colorChanged)
+			xml.set("color", iconColorWheel.curColor.toHexString(false).replace("0x", "#"));
 
 		for (anim in character.animDatas)
 		{

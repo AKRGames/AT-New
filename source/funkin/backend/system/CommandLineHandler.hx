@@ -1,7 +1,7 @@
 package funkin.backend.system;
 
-import sys.FileSystem;
 #if sys
+import sys.FileSystem;
 class CommandLineHandler {
 	public static function parseCommandLine(cmd:Array<String>) {
 		var i:Int = 0;
@@ -16,6 +16,7 @@ class CommandLineHandler {
 					Sys.println("-mod [mod name]    | Load a specific mod");
 					Sys.println("-modfolder [path]  | Sets the mod folder path");
 					#end
+					Sys.println("-nocolor           | Disables colors in the terminal");
 					Sys.println("-nogpubitmap       | Forces GPU only bitmaps off");
 					Sys.exit(0);
 				#if MOD_SUPPORT
@@ -28,8 +29,6 @@ class CommandLineHandler {
 					} else {
 						Main.modToLoad = arg.trim();
 					}
-				case "-nogpubitmap":
-					Main.forceGPUOnlyBitmapsOff = true;
 				case "-modfolder":
 					i++;
 					var arg = cmd[i];
@@ -43,6 +42,10 @@ class CommandLineHandler {
 						Sys.exit(0);
 					}
 				#end
+				case "-nocolor":
+					Main.noTerminalColor = true;
+				case "-nogpubitmap":
+					Main.forceGPUOnlyBitmapsOff = true;
 				case "-livereload":
 					// do nothing
 				default:

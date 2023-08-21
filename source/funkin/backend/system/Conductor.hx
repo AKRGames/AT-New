@@ -67,7 +67,7 @@ class Conductor
 	/**
 	 * Offset of the song
 	 */
-	 public static var songOffset:Float = 0;
+	public static var songOffset:Float = 0;
 
 	/**
 	 * Current step
@@ -289,7 +289,7 @@ class Conductor
 			if (change.stepTime < step && change.stepTime >= bpmChange.stepTime)
 				bpmChange = change;
 
-		return bpmChange.songTime + ((step - bpmChange.stepTime) * ((60 / bpmChange.bpm) * 250));
+		return bpmChange.songTime + ((step - bpmChange.stepTime) * ((60 / bpmChange.bpm) * (1000/stepsPerBeat)));
 	}
 
 	public static function getStepForTime(time:Float) {
@@ -303,6 +303,14 @@ class Conductor
 			if (change.songTime < time && change.songTime >= bpmChange.songTime)
 				bpmChange = change;
 
-		return bpmChange.stepTime + ((time - bpmChange.songTime) / ((60 / bpmChange.bpm) * 250));
+		return bpmChange.stepTime + ((time - bpmChange.songTime) / ((60 / bpmChange.bpm) * (1000/stepsPerBeat)));
+	}
+
+	public static inline function getMeasureLength()
+		return stepsPerBeat * beatsPerMesure;
+
+	public static inline function getMeasuresLength() {
+		if (FlxG.sound.music == null) return 0.0;
+		return getStepForTime(FlxG.sound.music.length) / getMeasureLength();
 	}
 }

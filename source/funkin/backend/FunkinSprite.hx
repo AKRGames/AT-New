@@ -240,7 +240,7 @@ class FunkinSprite extends FlxSkewedSprite implements IBeatReceiver implements I
 			return;
 		__oldScale = FlxPoint.get(scale.x, scale.y);
 		var requestedZoom = FlxMath.lerp(initialZoom, camera.zoom, zoomFactor);
-		var diff = requestedZoom / camera.zoom;
+		var diff = requestedZoom * camera.zoom;
 
 		scale.scale(diff);
 	}

@@ -1,12 +1,13 @@
 package funkin.editors.character;
 
+import funkin.options.type.OptionType;
+import funkin.options.type.NewOption;
 import flixel.util.FlxColor;
 import funkin.game.Character;
 import funkin.backend.chart.Chart;
 import funkin.options.type.TextOption;
 import funkin.options.type.IconOption;
 import funkin.options.OptionsScreen;
-import sys.FileSystem;
 
 class CharacterSelection extends EditorTreeMenu
 {
@@ -16,12 +17,32 @@ class CharacterSelection extends EditorTreeMenu
 		super.create();
 
 		var modsList:Array<String> = Character.getList(true);
-		main = new OptionsScreen("Character Editor", "Select a character to edit", [
+
+		var list:Array<OptionType> = [
 			for (char in (modsList.length == 0 ? Character.getList(false) : modsList))
 				new IconOption(char, "Press ACCEPT to edit this character.", Character.getIconFromCharName(char),
 			 	function() {
 					FlxG.switchState(new CharacterEditor(char));
 				})
-		]);
+		];
+
+		list.insert(0, new NewOption("New Character", "New Character", function() {
+			openSubState(new UIWarningSubstate("New Character", "This feature isnt implemented yet", [
+				{
+					label: "OK",
+					onClick: function(t) {
+
+					}
+				}
+			]));
+		}));
+
+		main = new OptionsScreen("Character Editor", "Select a character to edit", list);
+	}
+
+	override function createPost() {
+		super.createPost();
+
+		main.changeSelection(1);
 	}
 }

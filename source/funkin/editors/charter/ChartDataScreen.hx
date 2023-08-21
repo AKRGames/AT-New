@@ -47,18 +47,19 @@ class ChartDataScreen extends UISubstateWindow {
 			close();
 		}, 125);
 		add(saveButton);
-		
+
 		closeButton = new UIButton(saveButton.x - 20, saveButton.y, "Close", function() {
 			close();
 		}, 125);
 		add(closeButton);
+		closeButton.color = 0xFFFF0000;
 		closeButton.x -= closeButton.bWidth;
 	}
 
 	public function saveInfo()
 	{
 		@:privateAccess scrollSpeedStepper.__onChange(scrollSpeedStepper.label.text);
-		
+
 		PlayState.SONG.stage = stageTextBox.label.text;
 		PlayState.SONG.scrollSpeed = scrollSpeedStepper.value;
 	}

@@ -1,8 +1,8 @@
 package funkin.editors.character;
 
+import funkin.backend.system.framerate.Framerate;
 import haxe.xml.Printer;
 import haxe.xml.Access;
-import funkin.editors.character.CharacterAnimsWindow.CharacterAnimButtons;
 import funkin.backend.utils.XMLUtil.AnimData;
 import flixel.math.FlxPoint;
 import flixel.animation.FlxAnimation;
@@ -32,8 +32,8 @@ class CharacterEditor extends UIState {
 
 	// WINDOWS
 	public var characterPropertiresWindow:CharacterPropertiesWindow;
-	public var characterAnimsWindow:CharacterAnimsWindow;
-	
+	public var characterAnimsWindow:UIButtonList<CharacterAnimButtons>;
+
 	// camera for the character itself so that it can be unzoomed/zoomed in again
 	public var charCamera:FlxCamera;
 	// camera for the animations list
@@ -51,7 +51,7 @@ class CharacterEditor extends UIState {
 
 	public override function create() {
 		super.create();
-		
+
 		topMenu = [
 			{
 				label: "File",
@@ -237,19 +237,38 @@ class CharacterEditor extends UIState {
 		topMenuSpr.cameras = uiGroup.cameras = [uiCamera];
 
 		characterPropertiresWindow = new CharacterPropertiesWindow();
-		characterAnimsWindow = new CharacterAnimsWindow(character);
 		uiGroup.add(characterPropertiresWindow);
+
+		characterAnimsWindow = new UIButtonList<CharacterAnimButtons>(777, 209, 473, 488, "Character Animations", FlxPoint.get(429, 32));
+		characterAnimsWindow.addButton.callback = function() CharacterEditor.instance.createAnimWithUI();
+		var animOrder = character.getAnimOrder();
+		for (i=>anim in animOrder)
+			characterAnimsWindow.add(new CharacterAnimButtons(0,0, anim, character.getAnimOffset(anim)));
 		uiGroup.add(characterAnimsWindow);
 
-		playAnimation(character.getNameList()[0]);
+		playAnimation(animOrder[0]);
 
 		add(topMenuSpr);
 		add(uiGroup);
+
+		if(Framerate.isLoaded) {
+			Framerate.fpsCounter.alpha = 0.4;
+			Framerate.memoryCounter.alpha = 0.4;
+			Framerate.codenameBuildField.alpha = 0.4;
+		}
 	}
 
-	private var movingCam:Bool = false;
-	private var camDrag:FlxPoint = FlxPoint.get(0,0);
-	private var camDragSpeed:Float = 1.2;
+	override function destroy() {
+		super.destroy();
+		if(Framerate.isLoaded) {
+			Framerate.fpsCounter.alpha = 1;
+			Framerate.memoryCounter.alpha = 1;
+			Framerate.codenameBuildField.alpha = 1;
+		}
+	}
+
+	//private var movingCam:Bool = false;
+	//private var camDragSpeed:Float = 1.2;
 
 	private var nextScroll:FlxPoint = FlxPoint.get(0,0);
 
@@ -262,9 +281,9 @@ class CharacterEditor extends UIState {
 		}
 
 		if (character != null)
-			characterPropertiresWindow.characterInfo.text = '(${character.getNameList().length}) Animations\nFlipped: ${character.flipX}\nSprite: ${character.sprite}\nAnim: ${character.getAnimName()}\nOffset: (${character.frameOffset.x}, ${character.frameOffset.y})';
+			characterPropertiresWindow.characterInfo.text = '${character.getNameList().length} Animations\nFlipped: ${character.flipX}\nSprite: ${character.sprite}\nAnim: ${character.getAnimName()}\nOffset: (${character.frameOffset.x}, ${character.frameOffset.y})';
 
-		if (!(characterPropertiresWindow.hovered || characterAnimsWindow.hovered)) {
+		if (!(characterPropertiresWindow.hovered || characterAnimsWindow.hovered) && !characterAnimsWindow.dragging) {
 			if (FlxG.mouse.wheel != 0) {
 				zoom += 0.25 * FlxG.mouse.wheel;
 				__camZoom = Math.pow(2, zoom);
@@ -274,22 +293,12 @@ class CharacterEditor extends UIState {
 				closeCurrentContextMenu();
 				openContextMenu(topMenu[2].childs);
 			}
-		}
-
-
-		if (FlxG.mouse.justPressedMiddle) {
-			FlxG.mouse.getScreenPosition(charCamera, camDrag);
-			camDrag *= camDragSpeed;
-			camDrag += charCamera.scroll;
-		}
-
-		if (FlxG.mouse.pressedMiddle) {
-			var pos = FlxG.mouse.getScreenPosition(charCamera);
-			pos *= camDragSpeed;
-			nextScroll.set((camDrag.x - pos.x), (camDrag.y - pos.y));
-
-			currentCursor = HAND;
-		} else
+			if (FlxG.mouse.pressed) {
+				nextScroll.set(nextScroll.x - FlxG.mouse.deltaScreenX, nextScroll.y - FlxG.mouse.deltaScreenY);
+				currentCursor = HAND;
+			} else
+				currentCursor = ARROW;
+		} else if (!FlxG.mouse.pressed)
 			currentCursor = ARROW;
 
 		charCamera.scroll.set(
@@ -325,7 +334,7 @@ class CharacterEditor extends UIState {
 	function _file_save(_) {
 		#if sys
 		sys.io.File.saveContent(
-			Assets.getPath(Paths.xml('characters/${character.curCharacter}')), 
+			Assets.getPath(Paths.xml('characters/${character.curCharacter}')),
 			buildCharacter()
 		);
 		return;
@@ -340,7 +349,10 @@ class CharacterEditor extends UIState {
 	}
 
 	function buildCharacter():String {
-		var charXML:Xml = character.buildXML();
+		var charXML:Xml = character.buildXML([
+			for (button in characterAnimsWindow.buttons.members)
+				button.anim
+		]);
 
 		// clean
 		if (charXML.exists("gameOverChar") && character.gameOverCharacter == "bf-dead") charXML.remove("gameOverChar");
@@ -374,10 +386,10 @@ class CharacterEditor extends UIState {
 					character.animOffsets.set(anim, offsets.clone());
 					ghosts.setOffsets(anim, offsets.clone());
 				}
-			
-				for (anim in character.getNameList())
-					characterAnimsWindow.animButtons[anim].updateInfo(anim, character.getAnimOffset(anim), ghosts.animGhosts[anim].visible);
-				
+
+				for (charButton in characterAnimsWindow.buttons.members)
+					charButton.updateInfo(charButton.anim, character.getAnimOffset(charButton.anim), ghosts.animGhosts[charButton.anim].visible);
+
 				changeOffset(character.getAnimName(), FlxPoint.get(0, 0), false); // apply da new offsets
 		}
 		if (v != null)
@@ -437,7 +449,9 @@ class CharacterEditor extends UIState {
 	public function createAnim(animData:AnimData, animID:Int = -1, addtoUndo:Bool = true) {
 		XMLUtil.addAnimToSprite(character, animData);
 		ghosts.createGhost(animData.name);
-		characterAnimsWindow.createNewButton(animData.name, FlxPoint.get(animData.x,animData.y), false, animID);
+		var newButton = new CharacterAnimButtons(0, 0, animData.name, FlxPoint.get(animData.x,animData.y));
+		if (animID == -1) characterAnimsWindow.add(newButton);
+		else characterAnimsWindow.insert(newButton, animID);
 
 		playAnimation(animData.name);
 
@@ -447,12 +461,14 @@ class CharacterEditor extends UIState {
 
 	public function editAnim(name:String, animData:AnimData, addtoUndo:Bool = true) {
 		var oldAnimData:AnimData = character.animDatas.get(name);
-		var button:CharacterAnimButtons = characterAnimsWindow.animButtons[name];
+		var buttoner:CharacterAnimButtons = null;
+		for (button in characterAnimsWindow.buttons.members)
+			if (button.anim == name) buttoner = button;
 
 		ghosts.removeGhost(name);
 		XMLUtil.addAnimToSprite(character, animData);
 		ghosts.createGhost(animData.name);
-		button.updateInfo(animData.name, character.getAnimOffset(animData.name), ghosts.animGhosts[animData.name].visible);
+		buttoner.updateInfo(animData.name, character.getAnimOffset(animData.name), ghosts.animGhosts[animData.name].visible);
 
 		if (character.getAnimName() == animData.name) // update anim ifs its currently selected
 			playAnimation(animData.name);
@@ -462,20 +478,27 @@ class CharacterEditor extends UIState {
 	}
 
 	public function deleteAnim(name:String, addtoUndo:Bool = true) {
+		var animOrder:Array<String> = [
+			for (button in characterAnimsWindow.buttons.members)
+				button.anim
+		];
+
 		if (character.getNameList().length-1 == 0)
 			@:privateAccess character.animation._curAnim = null;
 		else
-			playAnimation(character.getNameList()[Std.int(Math.abs(character.getNameList().indexOf(name)-1))]);
+			playAnimation(animOrder[Std.int(Math.abs(animOrder.indexOf(name)-1))]);
+
+		for(button in characterAnimsWindow.buttons.members)
+			if(button.anim == name) characterAnimsWindow.remove(button);
 
 		// undo shit blah blah
-		var oldID:Int = character.getNameList().indexOf(name);
+		var oldID:Int = animOrder.indexOf(name);
 		var oldAnimData:AnimData = character.animDatas.get(name);
 
 		ghosts.removeGhost(name);
 		character.removeAnimation(name);
 		if (character.animOffsets.exists(name)) character.animOffsets.remove(name);
 		if (character.animDatas.exists(name)) character.animDatas.remove(name);
-		characterAnimsWindow.removeButton(name);
 
 		if (addtoUndo)
 			addToUndo(CDeleteAnim(oldID, oldAnimData));
@@ -504,8 +527,10 @@ class CharacterEditor extends UIState {
 		var ghost:Character = ghosts.animGhosts.get(anim);
 		ghost.visible = !ghost.visible;
 
-		var button:CharacterAnimButtons = characterAnimsWindow.animButtons[anim];
-		button.updateInfo(anim, character.getAnimOffset(anim), ghost.visible);
+		var animButton:CharacterAnimButtons = null;
+		for (button in characterAnimsWindow.buttons.members)
+			if (button.anim == anim) animButton = button;
+		animButton.updateInfo(anim, character.getAnimOffset(anim), ghost.visible);
 	}
 
 	function _playback_play_anim(_) {
@@ -520,7 +545,9 @@ class CharacterEditor extends UIState {
 
 	public function playAnimation(anim:String) {
 		character.playAnim(anim, true);
-		characterAnimsWindow.changeCurAnim(anim);
+
+		for(i in characterAnimsWindow.buttons.members)
+			i.alpha = i.anim == anim ? 1 : 0.25;
 	}
 
 	function _offsets_left(_) {
@@ -563,7 +590,9 @@ class CharacterEditor extends UIState {
 		if (character.getNameList().length == 0) return;
 
 		character.animOffsets.set(anim, character.getAnimOffset(anim) + change);
-		characterAnimsWindow.animButtons[anim].updateInfo(anim, character.getAnimOffset(anim), ghosts.animGhosts[anim].visible);
+		for (i in characterAnimsWindow.buttons.members)
+			if (i.anim == anim)
+				i.updateInfo(anim, character.getAnimOffset(anim), ghosts.animGhosts[anim].visible);
 		character.frameOffset.set(character.getAnimOffset(anim).x, character.getAnimOffset(anim).y);
 
 		ghosts.updateOffsets(anim, change);
@@ -579,12 +608,14 @@ class CharacterEditor extends UIState {
 			for (anim => offsets in character.animOffsets)
 				anim => offsets.clone()
 		];
-
 		for (anim in character.getNameList()) {
 			character.animOffsets[anim].zero();
-			characterAnimsWindow.animButtons[anim].updateInfo(anim, character.getAnimOffset(anim), ghosts.animGhosts[anim].visible);
+			for (i in characterAnimsWindow.buttons.members)
+				if (i.anim == anim)
+					i.updateInfo(anim, character.getAnimOffset(anim), ghosts.animGhosts[anim].visible);
 		}
 
+		changeOffset(character.getAnimName(), FlxPoint.get(), false);
 		ghosts.clearOffsets();
 
 		if (addtoUndo)

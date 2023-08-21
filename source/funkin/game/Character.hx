@@ -52,6 +52,7 @@ class Character extends FunkinSprite implements IBeatReceiver implements IOffset
 	public var playerOffsets:Bool = false;
 
 	public var icon:String = null;
+	public var iconColor:Null<FlxColor> = null;
 	public var gameOverCharacter:String = "bf-dead";
 
 	public var cameraOffset:FlxPoint = new FlxPoint(0, 0);
@@ -360,6 +361,36 @@ class Character extends FunkinSprite implements IBeatReceiver implements IOffset
 		globalOffset.put();
 	}
 
+	// FlxTrail Stuff for fixing position
+
+	var __reverseTrailProcedure:Bool = false;
+
+	/**
+	 * When using trails on characters you should do `trail.beforeCache = char.beforeTrailCache;`
+	 **/
+	dynamic function beforeTrailCache() {
+		if (isFlippedOffsets())
+		{
+			flipX = !flipX;
+			scale.x *= -1;
+			__reverseTrailProcedure = true;
+		}
+	}
+
+	/**
+	 * When using trails on characters you should do `trail.afterCache = char.afterTrailCache;`
+	 **/
+	dynamic function afterTrailCache() {
+		if (__reverseTrailProcedure)
+		{
+			flipX = !flipX;
+			scale.x *= -1;
+			__reverseTrailProcedure = false;
+		}
+	}
+
+	// Character editor and loading
+
 	public function applyXML(xml:Access) {
 		this.xml = xml; // modders wassup
 		sprite = curCharacter;
@@ -373,7 +404,8 @@ class Character extends FunkinSprite implements IBeatReceiver implements IOffset
 		if (xml.x.exists("camy")) cameraOffset.y = Std.parseFloat(xml.x.get("camy"));
 		if (xml.x.exists("holdTime")) holdTime = CoolUtil.getDefault(Std.parseFloat(xml.x.get("holdTime")), 4);
 		if (xml.x.exists("flipX")) flipX = (xml.x.get("flipX") == "true");
-		if (xml.x.exists("icon")) icon = xml.x.get("icon"); // idk why this is broke it just is
+		if (xml.x.exists("icon")) icon = xml.x.get("icon");
+		if (xml.x.exists("color")) iconColor = FlxColor.fromString(xml.x.get("color"));
 		if (xml.x.exists("scale")) {
 			var scale = Std.parseFloat(xml.x.get("scale")).getDefault(1);
 			this.scale.set(scale, scale);
@@ -395,7 +427,7 @@ class Character extends FunkinSprite implements IBeatReceiver implements IOffset
 		dance();
 	}
 
-	public function buildXML():Xml {
+	public function buildXML(?animsOrder:Array<String>):Xml {
 		var xml = Xml.createElement("character");
 		xml.set("isPlayer", playerOffsets == true ? "true" : "false");
 		xml.set("isGF", isGF == true ? "true" : "false");
@@ -406,12 +438,21 @@ class Character extends FunkinSprite implements IBeatReceiver implements IOffset
 		xml.set("camy", Std.string(cameraOffset.y));
 		xml.set("holdTime", Std.string(holdTime));
 		xml.set("flipX", Std.string(flipX));
-		xml.set("icon", icon);
+		xml.set("icon", getIcon());
+		if (iconColor != null)
+			xml.set("color", iconColor.toHexString(false).replace("0x", "#"));
 		xml.set("scale", Std.string(scale.x));
 		xml.set("antialiasing", antialiasing == true ? "true" : "false");
 		xml.set("sprite", sprite);
 
-		for (anim in animDatas)
+		var anims:Array<AnimData> = [];
+		if (animsOrder != null) {
+			for (name in animsOrder)
+				if (animDatas.exists(name)) anims.push(animDatas.get(name));
+		} else
+			anims = [for (anim in animDatas) anim];
+
+		for (anim in anims)
 		{
 			var animXml:Xml = Xml.createElement('anim');
 			animXml.set("name", anim.name);
@@ -432,6 +473,12 @@ class Character extends FunkinSprite implements IBeatReceiver implements IOffset
 
 	public inline function getIcon()
 		return (icon != null) ? icon : curCharacter;
+
+	public function getAnimOrder() {
+		return [for(a in xml.nodes.anim) if(a.has.name) a.att.name];
+	}
+
+	// Statics
 
 	public static function getIconFromCharName(?curCharacter:String) {
 		if(curCharacter == null) return "face";

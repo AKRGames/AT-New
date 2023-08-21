@@ -59,11 +59,12 @@ class UITextBox extends UISliceSprite implements IUIFocusable {
 		super.update(elapsed);
 
 		var selected = selectable && focused;
-
-		if(selectable) {
-			alpha = label.alpha = 1;
-		} else {
-			alpha = label.alpha = 0.4;
+		if (autoAlpha) {
+			if(selectable) {
+				alpha = label.alpha = 1;
+			} else {
+				alpha = label.alpha = 0.4;
+			}
 		}
 
 		var off = multiline ? 4 : ((bHeight - label.height) / 2);
@@ -134,6 +135,12 @@ class UITextBox extends UISliceSprite implements IUIFocusable {
 	public function onKeyUp(e:KeyCode, modifier:KeyModifier) {}
 
 	public function onTextInput(text:String):Void {
+		label.text = label.text.substr(0, position) + text + label.text.substr(position);
+		position += text.length;
+	}
+	// untested, but this should be a fix for if the text wont type
+	public function onTextEdit(text:String, start:Int, end:Int):Void {
+		trace(text, start, end);
 		label.text = label.text.substr(0, position) + text + label.text.substr(position);
 		position += text.length;
 	}

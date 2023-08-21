@@ -93,6 +93,7 @@ class CharacterAnimScreen extends UISubstateWindow {
 			close();
 		}, 125);
 		add(closeButton);
+		closeButton.color = 0xFFFF0000;
 		closeButton.x -= closeButton.bWidth;
 	}
 
@@ -116,7 +117,7 @@ class CharacterAnimScreen extends UISubstateWindow {
 			if (i != null)
 				animData.indices.push(i);
 		}
-		
+
 		if (onSave != null) onSave(animData);
 	}
 }

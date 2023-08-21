@@ -1,6 +1,6 @@
 package funkin.game;
 
-import funkin.editors.charter.EventsData;
+import funkin.backend.chart.EventsData;
 import funkin.backend.system.RotatingSpriteGroup;
 import funkin.editors.charter.Charter;
 import funkin.savedata.FunkinSave;
@@ -680,15 +680,13 @@ class PlayState extends MusicBeatState
 		healthBarBG.scrollFactor.set();
 		add(healthBarBG);
 
-
-
 		healthBar = new FlxBar(healthBarBG.x + 4, healthBarBG.y + 4, RIGHT_TO_LEFT, Std.int(healthBarBG.width - 8), Std.int(healthBarBG.height - 8), this,
 			'health', 0, maxHealth);
 		healthBar.scrollFactor.set();
-		if (opponentMode)
-			healthBar.createFilledBar(0xFF66FF33, 0xFFFF0000); // switch the colors
-		else
-			healthBar.createFilledBar(0xFFFF0000, 0xFF66FF33);
+		var leftColor:Int = dad.iconColor != null && Options.colorHealthBar ? dad.iconColor : 0xFFFF0000;
+		var rightColor:Int = boyfriend.iconColor != null && Options.colorHealthBar ? boyfriend.iconColor : 0xFF66FF33;
+		if (opponentMode) healthBar.createFilledBar(rightColor, leftColor); // switch the colors
+		else healthBar.createFilledBar(leftColor, rightColor);
 		add(healthBar);
 
 		health = maxHealth / 2;
@@ -925,7 +923,7 @@ class PlayState extends MusicBeatState
 
 		camZoomingInterval = cast songData.meta.beatsPerMesure.getDefault(4);
 
-		Conductor.changeBPM(songData.meta.bpm);
+		Conductor.changeBPM(songData.meta.bpm, cast songData.meta.beatsPerMesure.getDefault(4), cast songData.meta.stepsPerBeat.getDefault(4));
 
 		curSong = songData.meta.name.toLowerCase();
 
@@ -1146,7 +1144,7 @@ class PlayState extends MusicBeatState
 			var pos = FlxPoint.get();
 			var r = 0;
 			for(c in strumLines.members[curCameraTarget].characters) {
-				if (c == null) continue;
+				if (c == null || !c.visible) continue;
 				var cpos = c.getCameraPosition();
 				pos.x += cpos.x;
 				pos.y += cpos.y;
@@ -1338,8 +1336,10 @@ class PlayState extends MusicBeatState
 		}
 		else
 		{
-			trace('WENT BACK TO FREEPLAY??');
-			FlxG.switchState(new FreeplayState());
+			if (chartingMode)
+				FlxG.switchState(new funkin.editors.charter.Charter(SONG.meta.name, difficulty, false));
+			else
+				FlxG.switchState(new FreeplayState());
 		}
 	}
 
@@ -1456,9 +1456,9 @@ class PlayState extends MusicBeatState
 
 		var event:NoteHitEvent;
 		if (strumLine != null && !strumLine.cpu)
-			event = scripts.event("onPlayerHit", EventManager.get(NoteHitEvent).recycle(false, !note.isSustainNote, !note.isSustainNote, note, strumLine.characters, true, note.noteType, note.animSuffix.getDefault(strumLine.altAnim ? "-alt" : ""), "game/score/", "", note.strumID, score, note.isSustainNote ? null : accuracy, 0.023, daRating, Options.splashesEnabled && !note.isSustainNote && daRating == "sick"));
+			event = scripts.event("onPlayerHit", EventManager.get(NoteHitEvent).recycle(false, !note.isSustainNote, !note.isSustainNote, note, strumLine.characters, true, note.noteType, note.animSuffix.getDefault(note.strumID < strumLine.members.length ? strumLine.members[note.strumID].animSuffix : strumLine.animSuffix), "game/score/", "", note.strumID, score, note.isSustainNote ? null : accuracy, 0.023, daRating, Options.splashesEnabled && !note.isSustainNote && daRating == "sick"));
 		else
-			event = scripts.event("onDadHit", EventManager.get(NoteHitEvent).recycle(false, false, false, note, strumLine.characters, false, note.noteType, note.animSuffix.getDefault(strumLine.altAnim ? "-alt" : ""), "game/score/", "", note.strumID, 0, null, 0, daRating, false));
+			event = scripts.event("onDadHit", EventManager.get(NoteHitEvent).recycle(false, false, false, note, strumLine.characters, false, note.noteType, note.animSuffix.getDefault(note.strumID < strumLine.members.length ? strumLine.members[note.strumID].animSuffix : strumLine.animSuffix), "game/score/", "", note.strumID, 0, null, 0, daRating, false));
 		strumLine.onHit.dispatch(event);
 		scripts.event("onNoteHit", event);
 

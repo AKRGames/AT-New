@@ -21,13 +21,15 @@ class CharterBackdrop extends FlxBackdrop {
 		pixels.fillRect(new Rectangle(0, 0, 1, 160), 0xFFDDDDDD);
 		pixels.fillRect(new Rectangle(159, 0, 1, 160), 0xFFDDDDDD);
 		pixels.unlock();
-		alpha = 0.9;
 		// loadFrame(frame);
 	}
 
 	public override function draw() {
 		var ogX:Float = x;
 		for(_ in 0...strumlinesAmount) {
+			if (Charter.instance.strumLines.members[_] != null)
+				alpha = Charter.instance.strumLines.members[_].strumLine.visible ? 1 : 0.4;
+			else alpha = 0.9;
 			super.draw();
 			x += width;
 		}

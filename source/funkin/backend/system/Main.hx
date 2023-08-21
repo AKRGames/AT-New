@@ -38,8 +38,8 @@ class Main extends Sprite
 	public static var instance:Main;
 
 	public static var modToLoad:String = null;
-	// public static var forceGPUOnlyBitmapsOff:Bool = false;
-	public static var forceGPUOnlyBitmapsOff:Bool = true;
+	public static var forceGPUOnlyBitmapsOff:Bool = false;
+	public static var noTerminalColor:Bool = false;
 
 	public static var scaleMode:FunkinRatioScaleMode;
 	#if !mobile
@@ -71,7 +71,7 @@ class Main extends Sprite
 
 		addChild(game = new FunkinGame(gameWidth, gameHeight, MainState, Options.framerate, Options.framerate, skipSplash, startFullscreen));
 
-		#if !mobile
+		#if (!mobile && !web)
 		addChild(framerateSprite = new funkin.backend.system.framerate.Framerate());
 		framerateSprite.scaleX = framerateSprite.scaleY = stage.window.scale;
 		SystemInfo.init();

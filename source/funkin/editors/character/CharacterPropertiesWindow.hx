@@ -20,16 +20,8 @@ class CharacterPropertiesWindow extends UIWindow {
 		}, 200);
 		members.push(editButton);
 
-		characterInfo = new UIText(x + 450 + 20 - 42 - 400, y + 36 + 10, 400, "() Animations:\nFlipped:\nSprite:\nAnim:\nOffset: (,)");
+		characterInfo = new UIText(x + 450 + 20 - 42 - 400, y + 36 + 10, 400, "0 Animations:\nFlipped:\nSprite:\nAnim:\nOffset: (,)");
 		characterInfo.alignment = LEFT;
 		members.push(characterInfo);
-	}
-
-	public override function update(elapsed:Float) {
-		super.update(elapsed);
-
-		__rect.x = x; __rect.y = y+23;
-		__rect.width = bWidth; __rect.height = bHeight-23;
-		hovered = UIState.state.isOverlapping(this, __rect);
 	}
 }

@@ -25,6 +25,7 @@ class UISprite extends FlxSprite {
 
 	public var focused(get, set):Bool;
 	public var selectable:Bool = true;
+	public var autoAlpha:Bool = true;
 
 	private inline function get_focused():Bool
 		return UIState.state.currentFocus == cast this;
@@ -77,7 +78,8 @@ class UISprite extends FlxSprite {
 			FlxCamera._defaultCameras = cameras;
 
 			for(m in members)
-				m.draw();
+				if(m.exists && m.visible)
+					m.draw();
 
 			FlxCamera._defaultCameras = __oldDefCams;
 		}

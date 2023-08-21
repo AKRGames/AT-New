@@ -1,5 +1,6 @@
 package funkin.menus;
 
+import funkin.backend.scripting.events.MenuChangeEvent;
 import funkin.options.OptionsMenu;
 import funkin.backend.scripting.events.PauseCreationEvent;
 import funkin.backend.scripting.events.NameEvent;
@@ -155,7 +156,6 @@ class PauseSubState extends MusicBeatSubstate
 	}
 	override function destroy()
 	{
-
 		if(FlxG.cameras.list.contains(camera))
 			FlxG.cameras.remove(camera, true);
 		pauseScript.call("onDestroy");
@@ -171,12 +171,11 @@ class PauseSubState extends MusicBeatSubstate
 
 	function changeSelection(change:Int = 0):Void
 	{
-		curSelected += change;
+		var event = EventManager.get(MenuChangeEvent).recycle(curSelected, FlxMath.wrap(curSelected + change, 0, menuItems.length-1), change, change != 0);
+		pauseScript.call("onChangeItem", [event]);
+		if (event.cancelled) return;
 
-		if (curSelected < 0)
-			curSelected = menuItems.length - 1;
-		if (curSelected >= menuItems.length)
-			curSelected = 0;
+		curSelected = event.value;
 
 		var bullShit:Int = 0;
 

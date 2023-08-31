@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE codename-engine-character>
 <character isPlayer="false" flipX="fasle" x="0" y="0">
-	<anim name="Pico Idle"          anim="Idle"      fps="24" loop="false" x="0"  y="0"/>
-	<anim name="Pico Idle AlT"      anim="WEED CARD" fps="24" loop="false" x="0"  y="0"/>
+	<anim name="Idle"          anim="Pico Idle0000"      fps="24" loop="false" x="0"  y="0"/>
+	<anim name="WEED CARD"     anim="Pico Idle Alt0000"  fps="24" loop="false" x="0"  y="0"/>
 </character>

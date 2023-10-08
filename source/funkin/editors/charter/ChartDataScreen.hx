@@ -1,5 +1,6 @@
 package funkin.editors.charter;
 
+import funkin.game.Stage;
 import funkin.backend.chart.ChartData;
 import flixel.math.FlxPoint;
 import funkin.backend.chart.ChartData.ChartMetaData;
@@ -12,7 +13,7 @@ class ChartDataScreen extends UISubstateWindow {
 	public var closeButton:UIButton;
 
 	public var scrollSpeedStepper:UINumericStepper;
-	public var stageTextBox:UITextBox;
+	public var stageTextBox:UIAutoCompleteTextBox;
 
 	public function new(data:ChartData) {
 		super();
@@ -34,11 +35,15 @@ class ChartDataScreen extends UISubstateWindow {
 		var title:UIText;
 		add(title = new UIText(windowSpr.x + 20, windowSpr.y + 30 + 16, 0, "Edit Chart Data", 28));
 
-		stageTextBox = new UITextBox(title.x, title.y + title.height + 38, PlayState.SONG.stage, 160);
+		var stageFileList = Stage.getList(true);
+		if (stageFileList.length == 0) stageFileList = Stage.getList(false);
+
+		stageTextBox = new UIAutoCompleteTextBox(title.x, title.y + title.height + 38, PlayState.SONG.stage, 200);
+		stageTextBox.suggestItems = stageFileList;
 		add(stageTextBox);
 		addLabelOn(stageTextBox, "Stage");
 
-		scrollSpeedStepper = new UINumericStepper(stageTextBox.x + 160 + 26, stageTextBox.y, data.scrollSpeed, 0.1, 2, 0, 10, 82);
+		scrollSpeedStepper = new UINumericStepper(stageTextBox.x + 200 + 26, stageTextBox.y, data.scrollSpeed, 0.1, 2, 0, 10, 82);
 		add(scrollSpeedStepper);
 		addLabelOn(scrollSpeedStepper, "Scroll Speed");
 
@@ -60,8 +65,11 @@ class ChartDataScreen extends UISubstateWindow {
 	{
 		@:privateAccess scrollSpeedStepper.__onChange(scrollSpeedStepper.label.text);
 
+		var oldData:{stage:String, speed:Float} = {stage: PlayState.SONG.stage, speed: PlayState.SONG.scrollSpeed};
+
 		PlayState.SONG.stage = stageTextBox.label.text;
 		PlayState.SONG.scrollSpeed = scrollSpeedStepper.value;
-	}
 
+		Charter.instance.undos.addToUndo(CEditChartData(oldData, {stage: stageTextBox.label.text, speed: scrollSpeedStepper.value}));
+	}
 }

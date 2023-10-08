@@ -556,13 +556,21 @@ class PlayState extends MusicBeatState
 		if (!chartingMode || Options.charterEnablePlaytestScripts) {
 			switch(SONG.meta.name) {
 				// case "":
-					// ADD YOUR HARDCODED SCRIPTS HERE!
+					// ADD YOUR HARDCODED SCRIPTSa HERE!
 				default:
-					for(content in [Paths.getFolderContent('songs/${SONG.meta.name.toLowerCase()}/scripts', true, fromMods ? MODS : BOTH), Paths.getFolderContent('data/charts/', true, fromMods ? MODS : BOTH)])
-						for(file in content) addScript(file);
+					var scriptsFolders:Array<String> = ['songs/${SONG.meta.name.toLowerCase()}/scripts', 'data/charts/', 'songs/'];
+
+					for(folder in scriptsFolders) {
+						for(file in Paths.getFolderContent(folder, true, fromMods ? MODS : BOTH)) {
+							if (folder == 'data/charts/')
+								Logs.trace('data/charts/ is deprecrated and will be removed in the future. Please move script $file to songs/', WARNING, DARKYELLOW);
+
+							addScript(file);
+						}
+					}
+
 					var songEvents:Array<String> = [];
-					for (event in SONG.events)
-						if (!songEvents.contains(event.name)) songEvents.push(event.name);
+					for (event in SONG.events) if (!songEvents.contains(event.name)) songEvents.push(event.name);
 
 					for (file in Paths.getFolderContent('data/events/', true, fromMods ? MODS : BOTH)) {
 						var fileName:String = Path.withoutExtension(Path.withoutDirectory(file));
@@ -683,14 +691,13 @@ class PlayState extends MusicBeatState
 		healthBar = new FlxBar(healthBarBG.x + 4, healthBarBG.y + 4, RIGHT_TO_LEFT, Std.int(healthBarBG.width - 8), Std.int(healthBarBG.height - 8), this,
 			'health', 0, maxHealth);
 		healthBar.scrollFactor.set();
-		var leftColor:Int = dad.iconColor != null && Options.colorHealthBar ? dad.iconColor : 0xFFFF0000;
-		var rightColor:Int = boyfriend.iconColor != null && Options.colorHealthBar ? boyfriend.iconColor : 0xFF66FF33;
+		var leftColor:Int = dad != null && dad.iconColor != null && Options.colorHealthBar ? dad.iconColor : 0xFFFF0000;
+		var rightColor:Int = boyfriend != null && boyfriend.iconColor != null && Options.colorHealthBar ? boyfriend.iconColor : 0xFF66FF33;
 		if (opponentMode) healthBar.createFilledBar(rightColor, leftColor); // switch the colors
 		else healthBar.createFilledBar(leftColor, rightColor);
 		add(healthBar);
 
 		health = maxHealth / 2;
-
 
 		iconP1 = new HealthIcon(boyfriend != null ? boyfriend.getIcon() : "face", true);
 		iconP2 = new HealthIcon(dad != null ? dad.getIcon() : "face", false);

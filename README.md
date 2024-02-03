@@ -1,7 +1,8 @@
-This mod should be cancelled, cuz why would I want to work with [a transphobe and a zionist](https://twitter.com/acreGemz/status/1731410040320377157)?
+This mod should be canceled by now, cuz why would I want to work with [a transphobe and a zionist](https://twitter.com/acreGemz/status/1731410040320377157)?
 
 <details>
     <summary>Read about Codename Engine</summary>
+    
 # Friday Night Funkin' - Codename Engine (WIP)
 
 ## PLEASE NOTE - THIS IS STILL IN A ALPHA STATE
